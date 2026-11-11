@@ -1,0 +1,45 @@
+name: Fetch NSE fundamentals
+
+on:
+  schedule:
+    # 17:35 IST Mon–Sat: new results filings, shareholding, pledges and the board-meeting calendar
+    - cron: "5 12 * * 1-6"
+  workflow_dispatch:
+    inputs:
+      symbols:
+        description: "Space-separated symbols to fetch now (debug). Leave empty for the normal run."
+        required: false
+        default: ""
+      max_symbols:
+        description: "Cap per run for the normal run"
+        required: false
+        default: "180"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fundamentals
+  cancel-in-progress: false
+
+jobs:
+  fundamentals:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests==2.32.3 curl_cffi==0.7.4
+      - name: Fetch
+        env:
+          MAX_SYMBOLS: ${{ github.event.inputs.max_symbols || '180' }}
+        run: python fetch_fundamentals.py ${{ github.event.inputs.symbols }}
+      - name: Commit data
+        run: |
+          git config user.name "nse-fetch-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/fundamentals
+          git diff --cached --quiet || git commit -m "Fundamentals $(TZ=Asia/Kolkata date +%F)"
+          for i in 1 2 3; do git pull --rebase -q origin main && git push && break; sleep 5; done
