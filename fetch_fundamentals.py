@@ -110,9 +110,9 @@ TAGS = {
     "expenses": ["Expenses"],
     "pbt": ["ProfitBeforeTax", "ProfitLossBeforeTax", "ProfitLossFromOrdinaryActivitiesBeforeTax"],
     "tax": ["TaxExpense"],
-    "pat": ["ProfitLossAttributableToOwnersOfParent", "ProfitOrLossAttributableToOwnersOfParent",
-            "ProfitLossAfterTaxesMinorityInterestAndShareOfProfitLossOfAssociates", "ProfitLossForPeriod",
-            "ProfitLossForThePeriod", "NetProfitLossForThePeriod"],
+    "pat": ["ProfitLossForPeriod", "ProfitLossForThePeriod", "NetProfitLossForThePeriod"],
+    "pat_owners": ["ProfitLossAttributableToOwnersOfParent", "ProfitOrLossAttributableToOwnersOfParent",
+                   "ProfitLossAfterTaxesMinorityInterestAndShareOfProfitLossOfAssociates"],
     "depreciation": ["DepreciationDepletionAndAmortisationExpense", "DepreciationAndAmortisationExpense"],
     "finance_costs": ["FinanceCosts", "InterestExpended"],
     "exceptional": ["ExceptionalItemsBeforeTax", "ExceptionalItems"],
@@ -175,11 +175,19 @@ def parse_xbrl(x: str, qe: dt.date) -> dict:
                     return v
         return None
 
-    FLOW = ("revenue", "other_income", "total_income", "expenses", "pbt", "tax", "pat", "depreciation",
-            "finance_costs", "exceptional", "eps")
+    FLOW = ("revenue", "other_income", "total_income", "expenses", "pbt", "tax", "pat", "pat_owners",
+            "depreciation", "finance_costs", "exceptional", "eps")
     q = {k: pick(TAGS[k], "Q") for k in FLOW + ("face_value",)}
     q["paid_up_capital"] = pick(TAGS["paid_up_capital"], "Q")
     h = {k: pick(TAGS[k], "H") for k in FLOW}
+    for dct in (q, h):
+        # owners' share only when it is a plausible part of reported profit; some filings use the tag
+        # inside other statements, which produced zeros and sign errors
+        t, o = dct.get("pat"), dct.get("pat_owners")
+        if t is not None and o is not None and t != 0 and abs(o / t - 1) <= 0.3:
+            dct["pat"] = o
+        elif t is None and o is not None:
+            dct["pat"] = o
     if q.get("paid_up_capital") is None:
         q["paid_up_capital"] = pick(TAGS["paid_up_capital"], "I")
     bs = {k: pick(TAGS[k], "I") for k in ("equity", "borrowings_nc", "borrowings_c", "borrowings_bank", "cash",
@@ -190,7 +198,8 @@ def parse_xbrl(x: str, qe: dt.date) -> dict:
     npa = pick(TAGS["gross_npa_pct"], "Q")
     if npa is None:
         npa = pick(TAGS["gross_npa_pct"], "I")
-    bs["gross_npa_pct"] = npa if npa else None     # consolidated bank filings report 0 = not reported
+    # unit is "pure" (a fraction); consolidated bank filings report 0, meaning not reported
+    bs["gross_npa_pct"] = round(npa * 100, 2) if npa else None
     cf = {"ocf_h1": pick(TAGS["ocf"], "H"), "ocf_y": pick(TAGS["ocf"], "Y"),
           "pat_h1": pick(TAGS["pat"], "H"), "pat_y": pick(TAGS["pat"], "Y")}
     return dict(q=q, h=h, bs=bs if any(v is not None for v in bs.values()) else None, cf=cf,
@@ -224,13 +233,13 @@ def parsed_filing(f):
     p = f"{XC}/{f['seq']}.json"
     if os.path.exists(p):
         d = json.load(open(p))
-        if "h" in d:                       # older cache entries lack half-year values: re-parse those
+        if d.get("parser") == 3:           # older cache entries are re-parsed with the current rules
             return d
     x = get_text(f["url"])
     if not x:
         return None
     d = parse_xbrl(x, f["qe"])
-    d.update(qe=f["qe"].isoformat(), consolidated=f["consolidated"], filed=f["filed"], ixbrl=f["ixbrl"], xbrl=f["url"])
+    d.update(parser=3, qe=f["qe"].isoformat(), consolidated=f["consolidated"], filed=f["filed"], ixbrl=f["ixbrl"], xbrl=f["url"])
     json.dump(d, open(p, "w"))
     time.sleep(PAUSE)
     return d
