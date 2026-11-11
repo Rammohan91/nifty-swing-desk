@@ -1,0 +1,209 @@
+[
+ {
+  "engine": "curl_cffi"
+ },
+ {
+  "name": "quote",
+  "url": "https://www.nseindia.com/api/quote-equity?symbol=SAILIFE",
+  "status": 403,
+  "bytes": 399,
+  "ctype": "text/html"
+ },
+ {
+  "name": "results_comparison",
+  "url": "https://www.nseindia.com/api/results-comparision?symbol=SAILIFE",
+  "status": 200,
+  "bytes": 1854,
+  "ctype": "application/json; charset=utf-8"
+ },
+ {
+  "name": "if_results_1",
+  "url": "https://www.nseindia.com/api/integrated-filing-results?index=equities&symbol=SAILIFE",
+  "status": 200,
+  "bytes": 16157,
+  "ctype": "application/json; charset=utf-8"
+ },
+ {
+  "name": "if_results_2",
+  "url": "https://www.nseindia.com/api/integrated-filing-results?index=equities&type=Integrated%20Filing-%20Financials&symbol=SAILIFE",
+  "status": 200,
+  "bytes": 12303,
+  "ctype": "application/json; charset=utf-8"
+ },
+ {
+  "name": "if_results_3",
+  "url": "https://www.nseindia.com/api/integrated-filing-results?index=equities&symbol=SAILIFE&period_ended=all",
+  "status": 200,
+  "bytes": 16157,
+  "ctype": "application/json; charset=utf-8"
+ },
+ {
+  "name": "fin_results_new",
+  "url": "https://www.nseindia.com/api/corporates-financial-results?index=equities&symbol=SAILIFE&period=Quarterly&from_date=01-01-2025&to_date=11-11-2026",
+  "status": 200,
+  "bytes": 1523,
+  "ctype": "application/json; charset=utf-8"
+ },
+ {
+  "name": "fin_results_all",
+  "url": "https://www.nseindia.com/api/corporates-financial-results?index=equities&symbol=SAILIFE",
+  "status": 200,
+  "bytes": 2,
+  "ctype": "application/json; charset=utf-8"
+ },
+ {
+  "name": "annual_reports",
+  "url": "https://www.nseindia.com/api/annual-reports?index=equities&symbol=SAILIFE",
+  "status": 200,
+  "bytes": 697,
+  "ctype": "application/json; charset=utf-8"
+ },
+ {
+  "name": "event_calendar",
+  "url": "https://www.nseindia.com/api/event-calendar?index=equities&symbol=SAILIFE",
+  "status": 200,
+  "bytes": 1874,
+  "ctype": "application/json; charset=utf-8"
+ },
+ {
+  "name": "if_results_1_shape",
+  "type": "dict",
+  "keys": [
+   "data",
+   "size",
+   "page",
+   "totalCount"
+  ],
+  "n": 20,
+  "first": {
+   "attFileSize": "0 Bytes",
+   "audited": "Un-Audited",
+   "broadcast_Date": "05-Nov-2026 23:22:13",
+   "cmName": "Sai Life Sciences Limited",
+   "consolidated": "Consolidated",
+   "creation_Date": "05-Nov-2026 23:22:28",
+   "diff": "00:00:15",
+   "ixbrl": "https://nsearchives.nseindia.com/corporate/ixbrl/INTEGRATED_FILING_INDAS_210949_05112026232228_iXBRL_WEB.html",
+   "ixbrlFileSize": "76.26 KB",
+   "pdf_attach": "https://nsearchives.nseindia.com/corporate/null",
+   "qe_Date": "30-SEP-2026",
+   "revised_Date": null,
+   "revision_Remark": null,
+   "seq_Id": "210949",
+   "smName": "Sai Life Sciences Limited",
+   "symbol": "SAILIFE",
+   "type": "Integrated Filing- Financials",
+   "type_Sub": "Original",
+   "xbrl": "https://nsearchives.nseindia.com/corporate/xbrl/INTEGRATED_FILING_INDAS_1754391_05112026112228_WEB.xml",
+   "xbrlFileSize": "54.87 KB"
+  }
+ },
+ {
+  "name": "if_results_1_xbrl0",
+  "url": "https://nsearchives.nseindia.com/corporate/xbrl/INTEGRATED_FILING_INDAS_1754391_05112026112228_WEB.xml",
+  "status": 200,
+  "bytes": 56190,
+  "ctype": "application/xml"
+ },
+ {
+  "name": "if_results_1_xbrl1",
+  "url": "https://nsearchives.nseindia.com/corporate/xbrl/INTEGRATED_FILING_INDAS_1754390_05112026112122_WEB.xml",
+  "status": 200,
+  "bytes": 114987,
+  "ctype": "application/xml"
+ },
+ {
+  "name": "if_results_2_shape",
+  "type": "dict",
+  "keys": [
+   "data",
+   "size",
+   "page",
+   "totalCount"
+  ],
+  "n": 16,
+  "first": {
+   "attFileSize": "0 Bytes",
+   "audited": "Un-Audited",
+   "broadcast_Date": "05-Nov-2026 23:22:13",
+   "cmName": "Sai Life Sciences Limited",
+   "consolidated": "Consolidated",
+   "creation_Date": "05-Nov-2026 23:22:28",
+   "diff": "00:00:15",
+   "ixbrl": "https://nsearchives.nseindia.com/corporate/ixbrl/INTEGRATED_FILING_INDAS_210949_05112026232228_iXBRL_WEB.html",
+   "ixbrlFileSize": "76.26 KB",
+   "pdf_attach": "https://nsearchives.nseindia.com/corporate/null",
+   "qe_Date": "30-SEP-2026",
+   "revised_Date": null,
+   "revision_Remark": null,
+   "seq_Id": "210949",
+   "smName": "Sai Life Sciences Limited",
+   "symbol": "SAILIFE",
+   "type": "Integrated Filing- Financials",
+   "type_Sub": "Original",
+   "xbrl": "https://nsearchives.nseindia.com/corporate/xbrl/INTEGRATED_FILING_INDAS_1754391_05112026112228_WEB.xml",
+   "xbrlFileSize": "54.87 KB"
+  }
+ },
+ {
+  "name": "if_results_2_xbrl0",
+  "url": "https://nsearchives.nseindia.com/corporate/xbrl/INTEGRATED_FILING_INDAS_1754391_05112026112228_WEB.xml",
+  "status": 200,
+  "bytes": 56190,
+  "ctype": "application/xml"
+ },
+ {
+  "name": "if_results_2_xbrl1",
+  "url": "https://nsearchives.nseindia.com/corporate/xbrl/INTEGRATED_FILING_INDAS_1754390_05112026112122_WEB.xml",
+  "status": 200,
+  "bytes": 114987,
+  "ctype": "application/xml"
+ },
+ {
+  "name": "if_results_3_shape",
+  "type": "dict",
+  "keys": [
+   "data",
+   "size",
+   "page",
+   "totalCount"
+  ],
+  "n": 20,
+  "first": {
+   "attFileSize": "0 Bytes",
+   "audited": "Un-Audited",
+   "broadcast_Date": "05-Nov-2026 23:22:13",
+   "cmName": "Sai Life Sciences Limited",
+   "consolidated": "Consolidated",
+   "creation_Date": "05-Nov-2026 23:22:28",
+   "diff": "00:00:15",
+   "ixbrl": "https://nsearchives.nseindia.com/corporate/ixbrl/INTEGRATED_FILING_INDAS_210949_05112026232228_iXBRL_WEB.html",
+   "ixbrlFileSize": "76.26 KB",
+   "pdf_attach": "https://nsearchives.nseindia.com/corporate/null",
+   "qe_Date": "30-SEP-2026",
+   "revised_Date": null,
+   "revision_Remark": null,
+   "seq_Id": "210949",
+   "smName": "Sai Life Sciences Limited",
+   "symbol": "SAILIFE",
+   "type": "Integrated Filing- Financials",
+   "type_Sub": "Original",
+   "xbrl": "https://nsearchives.nseindia.com/corporate/xbrl/INTEGRATED_FILING_INDAS_1754391_05112026112228_WEB.xml",
+   "xbrlFileSize": "54.87 KB"
+  }
+ },
+ {
+  "name": "if_results_3_xbrl0",
+  "url": "https://nsearchives.nseindia.com/corporate/xbrl/INTEGRATED_FILING_INDAS_1754391_05112026112228_WEB.xml",
+  "status": 200,
+  "bytes": 56190,
+  "ctype": "application/xml"
+ },
+ {
+  "name": "if_results_3_xbrl1",
+  "url": "https://nsearchives.nseindia.com/corporate/xbrl/INTEGRATED_FILING_INDAS_1754390_05112026112122_WEB.xml",
+  "status": 200,
+  "bytes": 114987,
+  "ctype": "application/xml"
+ }
+]
