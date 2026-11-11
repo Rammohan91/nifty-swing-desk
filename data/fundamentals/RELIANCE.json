@@ -1,0 +1,188 @@
+{
+ "symbol": "RELIANCE",
+ "fetched_at": "2026-11-11T23:49:37+05:30",
+ "quarters": [
+  {
+   "qe": "2026-09-30",
+   "consolidated": true,
+   "filed": "30-Oct-2026 21:32:55",
+   "filing": "https://nsearchives.nseindia.com/corporate/ixbrl/INTEGRATED_FILING_INDAS_207709_30102026213255_iXBRL_WEB.html",
+   "revenue_cr": 332861.0,
+   "ebitda_cr": 56616.0,
+   "pat_cr": 29550.0,
+   "pbt_cr": 38613.0,
+   "finance_costs_cr": 8481.0,
+   "exceptional_cr": 0.0,
+   "eps": 18.88,
+   "ebitda_margin": 17.0,
+   "paid_up_capital": 135330000000.0,
+   "face_value": 10.0
+  },
+  {
+   "qe": "2026-06-30",
+   "consolidated": true,
+   "filed": "17-Jul-2026 19:50:03",
+   "filing": "https://nsearchives.nseindia.com/corporate/ixbrl/INTEGRATED_FILING_INDAS_175608_17072026195004_iXBRL_WEB.html",
+   "revenue_cr": 311850.0,
+   "ebitda_cr": 47517.0,
+   "pat_cr": 23196.0,
+   "pbt_cr": 30630.0,
+   "finance_costs_cr": 8337.0,
+   "exceptional_cr": 0.0,
+   "eps": 15.48,
+   "ebitda_margin": 15.2,
+   "paid_up_capital": 135330000000.0,
+   "face_value": 10.0
+  },
+  {
+   "qe": "2026-03-31",
+   "consolidated": true,
+   "filed": "24-Apr-2026 22:57:12",
+   "filing": "https://nsearchives.nseindia.com/corporate/ixbrl/INTEGRATED_FILING_INDAS_152826_24042026225714_iXBRL_WEB.html",
+   "revenue_cr": 298621.0,
+   "ebitda_cr": 44141.0,
+   "pat_cr": 20589.0,
+   "pbt_cr": 27195.0,
+   "finance_costs_cr": 6585.0,
+   "exceptional_cr": 0.0,
+   "eps": 12.54,
+   "ebitda_margin": 14.8,
+   "paid_up_capital": 135320000000.0,
+   "face_value": 10.0
+  },
+  {
+   "qe": "2025-12-31",
+   "consolidated": true,
+   "filed": "16-Jan-2026 19:38:16",
+   "filing": "https://nsearchives.nseindia.com/corporate/ixbrl/INTEGRATED_FILING_INDAS_135487_16012026193821_iXBRL_WEB.html",
+   "revenue_cr": 269496.0,
+   "ebitda_cr": 46018.0,
+   "pat_cr": 22290.0,
+   "pbt_cr": 29697.0,
+   "finance_costs_cr": 6613.0,
+   "exceptional_cr": 0.0,
+   "eps": 13.78,
+   "ebitda_margin": 17.1,
+   "paid_up_capital": 135320000000.0,
+   "face_value": 10.0
+  },
+  {
+   "qe": "2025-09-30",
+   "consolidated": true,
+   "filed": "17-Oct-2025 19:36:44",
+   "filing": "https://nsearchives.nseindia.com/corporate/ixbrl/INTEGRATED_FILING_INDAS_120726_17102025193644_iXBRL_WEB.html",
+   "revenue_cr": 258898.0,
+   "ebitda_cr": 45885.0,
+   "pat_cr": 22092.0,
+   "pbt_cr": 29124.0,
+   "finance_costs_cr": 6827.0,
+   "exceptional_cr": 0.0,
+   "eps": 13.42,
+   "ebitda_margin": 17.7,
+   "paid_up_capital": 135320000000.0,
+   "face_value": 10.0
+  },
+  {
+   "qe": "2025-06-30",
+   "consolidated": true,
+   "filed": "18-Jul-2025 20:17:22",
+   "filing": "https://nsearchives.nseindia.com/corporate/ixbrl/INTEGRATED_FILING_INDAS_104035_18072025201722_iXBRL_WEB.html",
+   "revenue_cr": 248660.0,
+   "ebitda_cr": 42905.0,
+   "pat_cr": 30783.0,
+   "pbt_cr": 37146.0,
+   "finance_costs_cr": 7036.0,
+   "exceptional_cr": 0.0,
+   "eps": 19.95,
+   "ebitda_margin": 17.3,
+   "paid_up_capital": 135320000000.0,
+   "face_value": 10.0
+  }
+ ],
+ "missing": [],
+ "latest": {
+  "qe": "2026-09-30",
+  "consolidated": true,
+  "filed": "30-Oct-2026 21:32:55",
+  "filing": "https://nsearchives.nseindia.com/corporate/ixbrl/INTEGRATED_FILING_INDAS_207709_30102026213255_iXBRL_WEB.html",
+  "revenue_cr": 332861.0,
+  "ebitda_cr": 56616.0,
+  "ebitda_margin": 17.0,
+  "pat_cr": 29550.0,
+  "eps": 18.88,
+  "revenue_yoy": 28.6,
+  "pat_yoy": 33.8,
+  "ebitda_yoy": 23.4,
+  "margin_yoy_pts": -0.7,
+  "revenue_qoq": 6.7,
+  "pat_qoq": 27.4,
+  "exceptional_cr": 0.0,
+  "yoy_base_qe": "2025-09-30"
+ },
+ "ttm": {
+  "eps": 60.68,
+  "pat_cr": 95625.0,
+  "ebit_cr": 156151.0,
+  "quarters": [
+   "2026-09-30",
+   "2026-06-30",
+   "2026-03-31",
+   "2025-12-31"
+  ],
+  "roe": 10.1,
+  "roce": 11.7
+ },
+ "balance_sheet": {
+  "as_of": "2026-09-30",
+  "equity_cr": 944404.0,
+  "borrowings_cr": 384952.0,
+  "cash_cr": 181723.0,
+  "receivables_cr": 59564.0,
+  "inventories_cr": 185480.0,
+  "de": 0.41,
+  "gross_npa_pct": null,
+  "ocf_to_pat_h1": 1.76
+ },
+ "shareholding": {
+  "as_of": "30-SEP-2026",
+  "promoter_pct": 50.44,
+  "promoter_change_pts": -0.04,
+  "history": [
+   [
+    "30-SEP-2026",
+    50.44
+   ],
+   [
+    "30-JUN-2026",
+    50.48
+   ],
+   [
+    "31-MAR-2026",
+    50.0
+   ],
+   [
+    "31-DEC-2025",
+    50.01
+   ],
+   [
+    "30-SEP-2025",
+    50.01
+   ],
+   [
+    "30-JUN-2025",
+    50.07
+   ]
+  ]
+ },
+ "pledge": {
+  "as_of": "30-Sep-2026",
+  "broadcast": "11-Nov-2026 16:30:30",
+  "promoter_encumbered_pct_of_promoter": 0.0,
+  "promoter_encumbered_pct_of_total": 0.0,
+  "shares_outstanding": 13532538722.0
+ },
+ "source": {
+  "name": "NSE Integrated Filing (XBRL), shareholding and pledge disclosures",
+  "url": "https://www.nseindia.com/get-quotes/equity?symbol=RELIANCE"
+ }
+}
