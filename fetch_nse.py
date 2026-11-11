@@ -4,7 +4,7 @@ Daily NSE end-of-day fetcher for the Nifty 500 Swing Desk.
 Runs in GitHub Actions (or anywhere with Python 3.10+ and `requests`).
 Writes normalised CSVs into ./data, which the workflow commits:
 
-  data/bhav/YYYYMMDD.csv     SYMBOL,OPEN,HIGH,LOW,CLOSE,VOLUME,DELIV_PER   (EQ series)
+  data/bhav/YYYYMMDD.csv     SYMBOL,OPEN,HIGH,LOW,CLOSE,VOLUME,DELIV_PER,PREV_CLOSE   (EQ series)
   data/index/YYYYMMDD.csv    INDEX,OPEN,HIGH,LOW,CLOSE,VOLUME
   data/fiidii/YYYYMMDD.json  provisional FII/DII cash figures, when NSE serves them
   data/nifty500.csv          current constituents (Symbol, Company Name, Industry)
@@ -67,10 +67,19 @@ def num(x):
         return None
 
 
+def has_prev_close(path) -> bool:
+    """Files from the first version lack PREV_CLOSE (NSE's split/bonus-adjusted previous close);
+    those are downloaded again once so the engine can adjust prices exactly."""
+    if not os.path.exists(path):
+        return False
+    with open(path) as f:
+        return "PREV_CLOSE" in f.readline()
+
+
 def fetch_bhav(d: dt.date) -> bool:
     """sec_bhavdata_full has OHLC, volume and delivery % in one file."""
     path = f"{DATA}/bhav/{d:%Y%m%d}.csv"
-    if os.path.exists(path):
+    if has_prev_close(path):
         return True
     r = get(f"https://nsearchives.nseindia.com/products/content/sec_bhavdata_full_{d:%d%m%Y}.csv")
     if not r:
@@ -83,10 +92,11 @@ def fetch_bhav(d: dt.date) -> bool:
         if x.get("SERIES") != "EQ":
             continue
         rows.append([x["SYMBOL"], num(x["OPEN_PRICE"]), num(x["HIGH_PRICE"]), num(x["LOW_PRICE"]),
-                     num(x["CLOSE_PRICE"]), num(x["TTL_TRD_QNTY"]), num(x.get("DELIV_PER"))])
+                     num(x["CLOSE_PRICE"]), num(x["TTL_TRD_QNTY"]), num(x.get("DELIV_PER")),
+                     num(x.get("PREV_CLOSE"))])
     if len(rows) < 500:          # partial or malformed file: do not store
         return False
-    write_csv(path, ["SYMBOL", "OPEN", "HIGH", "LOW", "CLOSE", "VOLUME", "DELIV_PER"], rows)
+    write_csv(path, ["SYMBOL", "OPEN", "HIGH", "LOW", "CLOSE", "VOLUME", "DELIV_PER", "PREV_CLOSE"], rows)
     return True
 
 
@@ -140,19 +150,45 @@ def fetch_fiidii(d: dt.date):
     want = d.strftime("%d-%b-%Y")
     if out.get("fii_date") != want:
         return False            # NSE has not published today's figures yet; do not mislabel yesterday's
-    # rolling 5-day FII net from stored files
+    # rolling 5-session FII net, only once five sessions are actually on file (today included)
     hist = [out.get("fii_cash_cr") or 0]
     p = f"{DATA}/fiidii"
+    today_file = f"{d:%Y%m%d}.json"
     if os.path.isdir(p):
-        for f in sorted(os.listdir(p))[-4:]:
+        for f in sorted(x for x in os.listdir(p) if x < today_file)[-4:]:
             try:
                 hist.append(json.load(open(os.path.join(p, f))).get("fii_cash_cr") or 0)
             except Exception:
                 pass
-    out["fii_5d_net_cr"] = round(sum(hist), 1)
+    out["fii_days_on_file"] = len(hist)
+    out["fii_5d_net_cr"] = round(sum(hist), 1) if len(hist) == 5 else None
     os.makedirs(p, exist_ok=True)
     json.dump(out, open(f"{p}/{d:%Y%m%d}.json", "w"))
     return True
+
+
+def _closes(path):
+    with open(path) as f:
+        return {r["SYMBOL"]: (r["CLOSE"], r["VOLUME"]) for r in csv.DictReader(f)}
+
+
+def repeats_previous_session(d: dt.date) -> bool:
+    """On NSE holidays the bhavcopy URL serves the previous session's file again.
+    A file whose closes AND volumes match the prior stored file for ≥98% of symbols is that repeat."""
+    path = f"{DATA}/bhav/{d:%Y%m%d}.csv"
+    prev = sorted(f for f in os.listdir(f"{DATA}/bhav") if f < f"{d:%Y%m%d}.csv")
+    if not prev or not os.path.exists(path):
+        return False
+    a, b = _closes(f"{DATA}/bhav/{prev[-1]}"), _closes(path)
+    common = set(a) & set(b)
+    return bool(common) and sum(a[s] == b[s] for s in common) / len(common) >= 0.98
+
+
+def drop_bhav(d: dt.date):
+    for sub in ("bhav", "index"):
+        p = f"{DATA}/{sub}/{d:%Y%m%d}.csv"
+        if os.path.exists(p):
+            os.remove(p)
 
 
 def main():
@@ -162,16 +198,29 @@ def main():
     sessions = json.load(open(sessions_p)) if os.path.exists(sessions_p) else {}
     got_const = fetch_constituents() or os.path.exists(f"{DATA}/nifty500.csv")
     results = {}
+    # repair: earlier versions stored holiday repeats as "partial"
+    for key, st in list(sessions.items()):
+        dd = dt.date.fromisoformat(key)
+        if st == "partial" and repeats_previous_session(dd):
+            drop_bhav(dd)
+            sessions[key] = "no_session"
+            results[key] = "no_session (removed repeated file)"
     d = today - dt.timedelta(days=BACKFILL_DAYS)
     while d <= today:
         key = d.isoformat()
-        if d.weekday() < 5 and sessions.get(key) != "no_session":
-            if sessions.get(key) == "traded" and os.path.exists(f"{DATA}/bhav/{d:%Y%m%d}.csv") \
+        # weekends are checked too: special sessions (e.g. Diwali Muhurat trading) happen on them;
+        # a weekend with no file, or one that repeats the prior session, is recorded as no_session
+        if sessions.get(key) != "no_session":
+            if sessions.get(key) == "traded" and has_prev_close(f"{DATA}/bhav/{d:%Y%m%d}.csv") \
                     and os.path.exists(f"{DATA}/index/{d:%Y%m%d}.csv"):
                 pass
             else:
                 b, i = fetch_bhav(d), fetch_index(d)
-                if b and i:
+                if b and repeats_previous_session(d):
+                    drop_bhav(d)
+                    b = i = False
+                    sessions[key] = "no_session"
+                elif b and i:
                     sessions[key] = "traded"
                 elif d < today or now.hour >= 20:
                     sessions[key] = "no_session" if not b else "partial"

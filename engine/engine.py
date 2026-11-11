@@ -18,7 +18,7 @@ from typing import Optional
 import numpy as np
 import pandas as pd
 
-ENGINE_VERSION = "1.0.0"
+ENGINE_VERSION = "1.1.0"
 
 # ---------------------------------------------------------------- parameters
 P = dict(
@@ -112,6 +112,45 @@ def liquidity_class(avg_value_cr: float) -> str:
     if avg_value_cr >= P["liq_ok_cr"]:
         return "Adequate"
     return "Thin"
+
+
+ACTION_RATIOS = [0.5, 1 / 3, 2 / 3, 0.25, 0.75, 0.2, 0.1, 0.4, 0.8, 0.6, 1 / 1.5]
+
+
+def adjust_corporate_actions(df: pd.DataFrame):
+    """Back-adjust unadjusted bhavcopy prices for splits/bonuses.
+
+    Exact when the file carries NSE's PREV_CLOSE (NSE adjusts it on the ex-date):
+    factor = prev_close[t] / close[t-1]. Otherwise falls back to snapping large opening gaps to a
+    standard split/bonus ratio. Gaps beyond the threshold that match no ratio are returned as
+    unresolved, and the stock is kept out of setups.
+    Returns (adjusted_df, events, unresolved)."""
+    d = df.copy()
+    events, unresolved = [], False
+    prior_close = d["close"].shift()
+    if "prev_close" in d and d["prev_close"].notna().sum() > len(d) * 0.5:
+        f = (d["prev_close"] / prior_close)
+        cand = f[(f - 1).abs() > 0.02].dropna()
+        for t, fac in cand.items():
+            events.append((t, float(fac), "NSE prev-close"))
+    else:
+        gap = d["open"] / prior_close
+        for t, g in gap[(gap < 0.78)].dropna().items():
+            snap = min(ACTION_RATIOS, key=lambda r: abs(g / r - 1))
+            # the open must sit within 4% of a standard ratio and the day must not be a crash
+            # (close also near the same ratio)
+            c = d.at[t, "close"] / prior_close[t]
+            if abs(g / snap - 1) <= 0.04 and abs(c / snap - 1) <= 0.12:
+                events.append((t, snap, "gap matched split/bonus ratio"))
+            elif g < 1 - P["corp_action_gap"]:
+                unresolved = True
+    for t, fac, _ in events:
+        before = d.index < t
+        for col in ("open", "high", "low", "close"):
+            d.loc[before, col] = d.loc[before, col] * fac
+        d.loc[before, "volume"] = d.loc[before, "volume"] / fac
+    ev = [dict(date=str(t.date()), factor=round(f, 4), method=m) for t, f, m in events]
+    return d, ev, unresolved
 
 
 def suspect_corporate_action(d: pd.DataFrame, lookback: int = 260) -> bool:
@@ -218,8 +257,9 @@ def strat_a_breakout_retest(sym, d) -> Optional[Setup]:
             ev.append("Pullback volume below breakout-day and 20-day average")
         stop = round(min(pb_low, R) - P["stop_buffer_atr"] * atr, 2)
         if renewed_buying(d) and last.close > R:
-            return Setup(**common, status="Confirmed continuation entry", actionable_candidate=pb_vol_ok,
-                         evidence=ev + [f"Renewed buying today: close above prior high, {last.rvol:.1f}x volume"],
+            return Setup(**common, status="Confirmed continuation entry", actionable_candidate=True,
+                         evidence=ev + ([] if pb_vol_ok else ["Pullback volume was NOT lighter than average (weaker)"])
+                         + [f"Renewed buying today: close above prior high, {last.rvol:.1f}x volume"],
                          trigger=_trigger_from_today(d), stop=stop,
                          invalidation=f"Daily close below {stop:.2f}", clarity=0.9 if pb_vol_ok else 0.6)
         rev = is_reversal(d)
@@ -276,8 +316,9 @@ def strat_b_shallow_pullback(sym, d) -> Optional[Setup]:
     common = dict(symbol=sym, strategy="B", support=round(pb_low, 2), resistance=round(hi20, 2),
                   pullback_low=round(pb_low, 2), stop=stop)
     if renewed_buying(d):
-        return Setup(**common, status="Confirmed continuation entry", actionable_candidate=vol_ok,
-                     evidence=ev + [f"Bullish close above prior high on {r.rvol:.1f}x volume"],
+        return Setup(**common, status="Confirmed continuation entry", actionable_candidate=True,
+                     evidence=ev + ([] if vol_ok else ["Pullback volume was NOT lighter than average (weaker)"])
+                     + [f"Bullish close above prior high on {r.rvol:.1f}x volume"],
                      trigger=_trigger_from_today(d), invalidation=f"Close below {stop:.2f}",
                      clarity=0.85 if vol_ok else 0.6)
     return Setup(**common, status="Pullback in progress", actionable_candidate=False, evidence=ev,
@@ -477,7 +518,7 @@ def classify_regime(idx: pd.DataFrame, breadth: dict, vix: Optional[float], vix_
         add("India VIX", f"{vix:.2f}" + (f" ({vix_chg:+.1f}%)" if vix_chg is not None else ""), pts, "")
     if sector_pos_share is not None:
         pts = 1 if sector_pos_share >= 0.6 else -1 if sector_pos_share <= 0.35 else 0
-        add("Sector participation", f"{sector_pos_share*100:.0f}% of sectors outperforming", pts, "")
+        add("Sector participation", f"{sector_pos_share*100:.0f}% of sectors up on the month with most members above 50 DMA", pts, "")
     if r.get("rvol") is not None and np.isfinite(r.rvol):
         up_day = r.chg_pct > 0
         pts = (1 if up_day else -1) if r.rvol >= 1.2 else 0
@@ -523,6 +564,8 @@ def sector_stats(frames: dict, sector_of: dict, idx_close: pd.Series) -> list:
     for s, d in frames.items():
         by.setdefault(sector_of.get(s, "Other"), []).append((s, d))
     i_m = float(idx_close.iloc[-1] / idx_close.iloc[-22] - 1) * 100
+    u_m = float(np.nanmedian([float(d.close.iloc[-1] / d.close.iloc[-22] - 1) * 100
+                              for d in frames.values() if len(d) > 22]))
     for sec, items in sorted(by.items()):
         if len(items) < 3:
             continue
@@ -531,7 +574,8 @@ def sector_stats(frames: dict, sector_of: dict, idx_close: pd.Series) -> list:
         d1 = np.nanmedian([ret(d, 1) for _, d in items])
         w1 = np.nanmedian([ret(d, 5) for _, d in items])
         m1 = np.nanmedian([ret(d, 21) for _, d in items])
-        rs_m = m1 - i_m
+        rs_m = m1 - u_m          # vs the median Nifty 500 stock (like-for-like)
+        rs_idx = m1 - i_m        # vs the cap-weighted index
         above20 = np.mean([d.close.iloc[-1] > d.sma20.iloc[-1] for _, d in items]) * 100
         above50 = np.mean([d.close.iloc[-1] > d.sma50.iloc[-1] for _, d in items]) * 100
         rv = np.nanmedian([d.rvol.iloc[-1] for _, d in items])
@@ -539,7 +583,7 @@ def sector_stats(frames: dict, sector_of: dict, idx_close: pd.Series) -> list:
         trend = ("Leading" if rs_m > 2 and above50 >= 60 else "Improving" if rs_m > 0 and w1 > 0 else
                  "Weakening" if rs_m < 0 and w1 < 0 else "Lagging" if rs_m < -2 else "Mixed")
         out.append(dict(name=sec, members=len(items), d1=round(d1, 2), w1=round(w1, 2), m1=round(m1, 2),
-                        rs_m=round(rs_m, 2), above20=round(above20), above50=round(above50),
+                        rs_m=round(rs_m, 2), rs_idx=round(rs_idx, 2), above20=round(above20), above50=round(above50),
                         rvol=round(float(rv), 2), trend=trend,
                         strongest=[s for s, _ in rank[:3]], weakest=[s for s, _ in rank[-3:]]))
     return sorted(out, key=lambda x: x["rs_m"], reverse=True)
@@ -550,17 +594,21 @@ def scan(raw: dict, idx: pd.DataFrame, sector_of: dict, names: dict, vix=None, v
          fii_5d_cr=None, prev_watch: Optional[set] = None, universe_size: int = 500) -> dict:
     """raw: {symbol: OHLCV DataFrame}. idx: Nifty 500 OHLCV. Returns a report body (no narrative)."""
     idx_i = add_indicators(idx)
-    frames, skipped, corp = {}, [], []
+    frames, skipped, corp, adjusted = {}, [], [], []
     for s, df in raw.items():
         if len(df) < P["min_bars"]:
             skipped.append(dict(symbol=s, reason=f"only {len(df)} sessions of history"))
             continue
-        if suspect_corporate_action(df):
+        df, ev, unresolved = adjust_corporate_actions(df)
+        if ev:
+            adjusted.append(dict(symbol=s, events=ev))
+        if unresolved:
             corp.append(s)
         frames[s] = add_indicators(df, idx["close"])
     breadth = breadth_stats(frames)
     sectors = sector_stats(frames, sector_of, idx["close"])
-    sec_pos = np.mean([x["rs_m"] > 0 for x in sectors]) if sectors else None
+    # participation: share of sectors with a positive month AND most members above their 50 DMA
+    sec_pos = np.mean([x["m1"] > 0 and x["above50"] >= 50 for x in sectors]) if sectors else None
     regime = classify_regime(idx_i, breadth, vix, vix_chg, sec_pos, fii_5d_cr)
 
     rows, setups = [], []
@@ -681,5 +729,6 @@ def scan(raw: dict, idx: pd.DataFrame, sector_of: dict, names: dict, vix=None, v
                             "sma100", "sma200", "rsi14", "macd_hist", "atr14", "rs63", "rvol",
                             "deliv_pct", "avg_value_cr", "liquidity", "ext_atr"], rows=rows),
         scan=dict(universe=universe_size, received=len(raw), scanned=len(frames),
-                  complete=len(frames) >= universe_size, skipped=skipped, corporate_action_suspects=corp),
+                  complete=len(frames) >= universe_size, skipped=skipped, corporate_action_suspects=corp,
+                  adjusted_for_actions=adjusted),
     )

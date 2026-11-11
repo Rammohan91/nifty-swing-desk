@@ -78,8 +78,17 @@ def index_rows(idx_frames: dict, n500: pd.Series) -> list:
 # ------------------------------------------------------------------ real data
 def load_disk(data: str, date: str):
     ymd = date.replace("-", "")
+    sp = os.path.join(data, "sessions.json")
+    traded = None
+    if os.path.exists(sp):
+        traded = {k.replace("-", "") for k, v in json.load(open(sp)).items() if v == "traded"}
+        if ymd not in traded:
+            raise SystemExit(json.dumps(dict(status="failed",
+                                             error=f"{date} is not marked as a traded session in sessions.json")))
     files = sorted(glob.glob(os.path.join(data, "bhav", "*.csv")))
-    files = [f for f in files if os.path.basename(f)[:8] <= ymd][-320:]
+    files = [f for f in files if os.path.basename(f)[:8] <= ymd
+             and (traded is None or os.path.basename(f)[:8] in traded)
+             and os.path.exists(os.path.join(data, "index", os.path.basename(f)))][-320:]
     if not files or os.path.basename(files[-1])[:8] != ymd:
         raise SystemExit(json.dumps(dict(status="failed", error=f"No bhavcopy for {date} in {data}/bhav")))
     u = pd.read_csv(os.path.join(data, "nifty500.csv"))
@@ -87,10 +96,14 @@ def load_disk(data: str, date: str):
     uni = set(u["Symbol"])
     names = dict(zip(u["Symbol"], u["Company Name"]))
     sector_of = {s: sector_for(s, names.get(s, ""), ind) for s, ind in zip(u["Symbol"], u["Industry"])}
-    parts = []
+    parts, prev_sig = [], None
     for f in files:
         x = pd.read_csv(f)
         x = x[x["SYMBOL"].isin(uni)]
+        sig = tuple(zip(x.SYMBOL, x.CLOSE, x.VOLUME))
+        if sig == prev_sig:          # holiday repeat of the previous session: never a real bar
+            continue
+        prev_sig = sig
         x["date"] = pd.to_datetime(os.path.basename(f)[:8])
         parts.append(x)
     allx = pd.concat(parts)
@@ -98,7 +111,9 @@ def load_disk(data: str, date: str):
     for s, g in allx.groupby("SYMBOL"):
         g = g.set_index("date").sort_index()
         raw[s] = pd.DataFrame(dict(open=g.OPEN, high=g.HIGH, low=g.LOW, close=g.CLOSE, volume=g.VOLUME,
-                                   deliv_pct=pd.to_numeric(g.get("DELIV_PER"), errors="coerce")))
+                                   deliv_pct=pd.to_numeric(g.get("DELIV_PER"), errors="coerce"),
+                                   prev_close=pd.to_numeric(g["PREV_CLOSE"], errors="coerce")
+                                   if "PREV_CLOSE" in g else np.nan))
     ifiles = sorted(glob.glob(os.path.join(data, "index", "*.csv")))
     ifiles = [f for f in ifiles if os.path.basename(f)[:8] <= ymd][-320:]
     ip = []
@@ -126,7 +141,14 @@ def build(raw, idx_frames, sector_of, names, universe, flows, market_date, is_sa
     vix = idx_frames.get("India VIX")
     vix_last = float(vix.close.iloc[-1]) if vix is not None else None
     vix_chg = float((vix.close.iloc[-1] / vix.close.iloc[-2] - 1) * 100) if vix is not None else None
-    fii5 = flows.get("fii_5d_net_cr") if flows else None
+    fii5 = None
+    if flows:
+        if (flows.get("fii_days_on_file") or 0) >= 5:
+            fii5 = flows.get("fii_5d_net_cr")
+        else:
+            flows["fii_5d_net_cr"] = None
+            flows["note"] = (f"5-session FII total starts once 5 sessions are on file "
+                             f"({flows.get('fii_days_on_file') or 1} so far); not used in the regime yet")
     body = scan(raw, n500, sector_of, names, vix=vix_last, vix_chg=vix_chg, fii_5d_cr=fii5,
                 universe_size=universe)
     screener = body.pop("screener")
