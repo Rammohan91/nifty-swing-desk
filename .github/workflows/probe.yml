@@ -1,0 +1,27 @@
+name: Probe NSE endpoints
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests==2.32.3
+      - run: python tools/probe_nse.py
+      - name: Commit probe output
+        run: |
+          git config user.name "nse-fetch-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add probe
+          git diff --cached --quiet || git commit -m "NSE endpoint probe output"
+          git pull --rebase -q origin main
+          git push
