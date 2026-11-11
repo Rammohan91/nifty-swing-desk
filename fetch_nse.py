@@ -68,8 +68,8 @@ def num(x):
 
 
 def has_prev_close(path) -> bool:
-    """Files from the first version lack PREV_CLOSE (NSE's split/bonus-adjusted previous close);
-    those are downloaded again once so the engine can adjust prices exactly."""
+    """Files from the first version lack PREV_CLOSE. It is stored for reference only: NSE does NOT
+    adjust it for splits/bonuses, so the engine adjusts from price gaps instead."""
     if not os.path.exists(path):
         return False
     with open(path) as f:

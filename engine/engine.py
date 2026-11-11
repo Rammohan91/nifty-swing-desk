@@ -18,7 +18,7 @@ from typing import Optional
 import numpy as np
 import pandas as pd
 
-ENGINE_VERSION = "1.1.0"
+ENGINE_VERSION = "1.1.1"
 
 # ---------------------------------------------------------------- parameters
 P = dict(
@@ -120,30 +120,22 @@ ACTION_RATIOS = [0.5, 1 / 3, 2 / 3, 0.25, 0.75, 0.2, 0.1, 0.4, 0.8, 0.6, 1 / 1.5
 def adjust_corporate_actions(df: pd.DataFrame):
     """Back-adjust unadjusted bhavcopy prices for splits/bonuses.
 
-    Exact when the file carries NSE's PREV_CLOSE (NSE adjusts it on the ex-date):
-    factor = prev_close[t] / close[t-1]. Otherwise falls back to snapping large opening gaps to a
-    standard split/bonus ratio. Gaps beyond the threshold that match no ratio are returned as
-    unresolved, and the stock is kept out of setups.
-    Returns (adjusted_df, events, unresolved)."""
+    Large opening gaps are snapped to a standard split/bonus ratio (both the open and the close must
+    sit near the same ratio, so a genuine crash is not mistaken for a split). NSE's PREV_CLOSE field is
+    NOT adjusted on ex-dates (checked: KOTAKBANK 1:5 split, 14 Jan 2026), so it is not used.
+    Gaps beyond the threshold that match no ratio are returned as unresolved, and the stock is kept
+    out of setups. Returns (adjusted_df, events, unresolved)."""
     d = df.copy()
     events, unresolved = [], False
     prior_close = d["close"].shift()
-    if "prev_close" in d and d["prev_close"].notna().sum() > len(d) * 0.5:
-        f = (d["prev_close"] / prior_close)
-        cand = f[(f - 1).abs() > 0.02].dropna()
-        for t, fac in cand.items():
-            events.append((t, float(fac), "NSE prev-close"))
-    else:
-        gap = d["open"] / prior_close
-        for t, g in gap[(gap < 0.78)].dropna().items():
-            snap = min(ACTION_RATIOS, key=lambda r: abs(g / r - 1))
-            # the open must sit within 4% of a standard ratio and the day must not be a crash
-            # (close also near the same ratio)
-            c = d.at[t, "close"] / prior_close[t]
-            if abs(g / snap - 1) <= 0.04 and abs(c / snap - 1) <= 0.12:
-                events.append((t, snap, "gap matched split/bonus ratio"))
-            elif g < 1 - P["corp_action_gap"]:
-                unresolved = True
+    gap = d["open"] / prior_close
+    for t, g in gap[(gap < 0.78)].dropna().items():
+        snap = min(ACTION_RATIOS, key=lambda r: abs(g / r - 1))
+        c = d.at[t, "close"] / prior_close[t]
+        if abs(g / snap - 1) <= 0.04 and abs(c / snap - 1) <= 0.12:
+            events.append((t, snap, "gap matched split/bonus ratio"))
+        elif g < 1 - P["corp_action_gap"]:
+            unresolved = True
     for t, fac, _ in events:
         before = d.index < t
         for col in ("open", "high", "low", "close"):

@@ -25,7 +25,7 @@ Steps:
 1. Work in a fresh directory: `git clone --depth 1 https://github.com/Rammohan91/nifty-swing-desk repo && cd repo`
    then `pip install --break-system-packages pandas numpy` if they are missing.
    Get today's IST date (current_time tool). Call it D.
-   Check `grep ENGINE_VERSION engine/engine.py`. If it is below "1.1.0", record a failed run with error
+   Check `grep ENGINE_VERSION engine/engine.py`. If it is below "1.1.1", record a failed run with error
    "Engine in the data repo is out of date — push the Nov 11 update (holiday-duplicate and split fixes)"
    (as in step 2) and stop: the old engine can read holiday repeat files as real sessions.
 
