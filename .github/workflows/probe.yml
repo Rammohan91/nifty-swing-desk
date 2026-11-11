@@ -21,7 +21,7 @@ jobs:
         run: |
           git config user.name "nse-fetch-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add probe probe2
+          git add probe probe2 probe3
           git diff --cached --quiet || git commit -m "NSE endpoint probe output"
           git pull --rebase -q origin main
           git push
