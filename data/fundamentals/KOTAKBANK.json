@@ -1,6 +1,6 @@
 {
  "symbol": "KOTAKBANK",
- "fetched_at": "2026-11-11T23:54:31+05:30",
+ "fetched_at": "2026-11-11T23:57:34+05:30",
  "quarters": [
   {
    "qe": "2026-09-30",
@@ -143,7 +143,7 @@
   "equity_cr": 194705.7,
   "borrowings_cr": 123119.51,
   "cash_cr": null,
-  "gross_npa_pct": 0.0109
+  "gross_npa_pct": 1.09
  },
  "shareholding": {
   "as_of": "30-SEP-2026",

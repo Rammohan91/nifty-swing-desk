@@ -1,6 +1,6 @@
 {
  "symbol": "PETRONET",
- "fetched_at": "2026-11-11T23:54:20+05:30",
+ "fetched_at": "2026-11-11T23:57:23+05:30",
  "quarters": [
   {
    "qe": "2026-09-30",
@@ -43,7 +43,7 @@
    "filing": "https://nsearchives.nseindia.com/corporate/ixbrl/INTEGRATED_FILING_INDAS_155510_04052026212018_iXBRL_WEB.html",
    "revenue_cr": 9442.09,
    "ebitda_cr": 1861.19,
-   "pat_cr": 0.0,
+   "pat_cr": 1370.74,
    "pbt_cr": 1794.39,
    "finance_costs_cr": 61.54,
    "exceptional_cr": 0.0,
@@ -60,7 +60,7 @@
    "filing": "https://nsearchives.nseindia.com/corporate/ixbrl/INTEGRATED_FILING_INDAS_142583_12022026190547_iXBRL_WEB.html",
    "revenue_cr": 11163.83,
    "ebitda_cr": 1198.31,
-   "pat_cr": 0.0,
+   "pat_cr": 869.61,
    "pbt_cr": 1141.0,
    "finance_costs_cr": 55.91,
    "exceptional_cr": 0.0,
@@ -128,7 +128,7 @@
  },
  "ttm": {
   "eps": 30.9,
-  "pat_cr": 2393.57,
+  "pat_cr": 4633.92,
   "ebit_cr": 6302.27,
   "quarters": [
    "2026-09-30",
@@ -136,7 +136,7 @@
    "2026-03-31",
    "2025-12-31"
   ],
-  "roe": 9.9,
+  "roe": 19.1,
   "roce": 26.0
  },
  "balance_sheet": {

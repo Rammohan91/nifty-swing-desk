@@ -1,6 +1,6 @@
 {
  "symbol": "SHYAMMETL",
- "fetched_at": "2026-11-11T23:53:02+05:30",
+ "fetched_at": "2026-11-11T23:56:07+05:30",
  "quarters": [
   {
    "qe": "2026-09-30",
@@ -77,7 +77,7 @@
    "filing": "https://nsearchives.nseindia.com/corporate/ixbrl/INTEGRATED_FILING_INDAS_125256_07112025200110_iXBRL_WEB.html",
    "revenue_cr": 4457.02,
    "ebitda_cr": 539.43,
-   "pat_cr": -1.31,
+   "pat_cr": 260.45,
    "pbt_cr": 347.09,
    "finance_costs_cr": 50.3,
    "exceptional_cr": 0.01,
@@ -118,7 +118,7 @@
   "pat_cr": 510.99,
   "eps": 18.39,
   "revenue_yoy": 33.7,
-  "pat_yoy": 39106.9,
+  "pat_yoy": 96.2,
   "ebitda_yoy": 52.6,
   "margin_yoy_pts": 1.7,
   "revenue_qoq": 9.3,

@@ -1,6 +1,6 @@
 {
  "symbol": "TCS",
- "fetched_at": "2026-11-11T23:53:59+05:30",
+ "fetched_at": "2026-11-11T23:57:00+05:30",
  "quarters": [
   {
    "qe": "2026-09-30",
@@ -148,7 +148,7 @@
   "inventories_cr": 28.0,
   "de": 0.0,
   "gross_npa_pct": null,
-  "ocf_to_pat_h1": 0.95
+  "ocf_to_pat_h1": 0.94
  },
  "shareholding": {
   "as_of": "30-SEP-2026",

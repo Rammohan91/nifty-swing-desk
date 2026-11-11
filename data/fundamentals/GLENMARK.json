@@ -1,6 +1,6 @@
 {
  "symbol": "GLENMARK",
- "fetched_at": "2026-11-11T23:53:35+05:30",
+ "fetched_at": "2026-11-11T23:56:38+05:30",
  "quarters": [
   {
    "qe": "2026-09-30",
@@ -9,7 +9,7 @@
    "filing": "https://nsearchives.nseindia.com/corporate/ixbrl/INTEGRATED_FILING_INDAS_210672_05112026193445_iXBRL_WEB.html",
    "revenue_cr": 4157.09,
    "ebitda_cr": 773.57,
-   "pat_cr": 0.0,
+   "pat_cr": 263.83,
    "pbt_cr": 338.29,
    "finance_costs_cr": 63.77,
    "exceptional_cr": -283.88,
@@ -43,7 +43,7 @@
    "filing": "https://nsearchives.nseindia.com/corporate/ixbrl/INTEGRATED_FILING_INDAS_164387_29052026231208_iXBRL_WEB.html",
    "revenue_cr": 3770.59,
    "ebitda_cr": 762.6,
-   "pat_cr": -0.1,
+   "pat_cr": 301.32,
    "pbt_cr": 387.77,
    "finance_costs_cr": 42.6,
    "exceptional_cr": -373.4,
@@ -115,20 +115,20 @@
   "revenue_cr": 4157.09,
   "ebitda_cr": 773.57,
   "ebitda_margin": 18.6,
-  "pat_cr": 0.0,
+  "pat_cr": 263.83,
   "eps": 9.35,
   "revenue_yoy": -31.3,
-  "pat_yoy": -100.0,
+  "pat_yoy": -56.8,
   "ebitda_yoy": -67.2,
   "margin_yoy_pts": -20.4,
   "revenue_qoq": 3.4,
-  "pat_qoq": -100.0,
+  "pat_qoq": -45.4,
   "exceptional_cr": -283.88,
   "yoy_base_qe": "2025-09-30"
  },
  "ttm": {
   "eps": 51.43,
-  "pat_cr": 886.03,
+  "pat_cr": 1451.28,
   "ebit_cr": 2105.25,
   "quarters": [
    "2026-09-30",
@@ -136,7 +136,7 @@
    "2026-03-31",
    "2025-12-31"
   ],
-  "roe": 7.9,
+  "roe": 12.9,
   "roce": 17.4
  },
  "balance_sheet": {
@@ -147,7 +147,8 @@
   "receivables_cr": 5493.74,
   "inventories_cr": 3746.19,
   "de": 0.08,
-  "gross_npa_pct": null
+  "gross_npa_pct": null,
+  "ocf_to_pat_h1": -0.27
  },
  "shareholding": {
   "as_of": "30-SEP-2026",

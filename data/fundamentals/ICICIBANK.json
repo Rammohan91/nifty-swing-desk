@@ -1,6 +1,6 @@
 {
  "symbol": "ICICIBANK",
- "fetched_at": "2026-11-11T23:53:48+05:30",
+ "fetched_at": "2026-11-11T23:56:49+05:30",
  "quarters": [
   {
    "qe": "2026-09-30",
@@ -143,7 +143,7 @@
   "equity_cr": 410205.34,
   "borrowings_cr": 295561.42,
   "cash_cr": null,
-  "gross_npa_pct": 0.0121
+  "gross_npa_pct": 1.21
  },
  "shareholding": {
   "as_of": "30-SEP-2026",

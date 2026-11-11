@@ -1,6 +1,6 @@
 {
  "symbol": "SAILIFE",
- "fetched_at": "2026-11-11T23:52:51+05:30",
+ "fetched_at": "2026-11-11T23:55:55+05:30",
  "quarters": [
   {
    "qe": "2026-09-30",
@@ -26,7 +26,7 @@
    "filing": "https://nsearchives.nseindia.com/corporate/ixbrl/INTEGRATED_FILING_INDAS_183494_06082026234731_iXBRL_WEB.html",
    "revenue_cr": 554.28,
    "ebitda_cr": 148.0,
-   "pat_cr": 0.0,
+   "pat_cr": 73.28,
    "pbt_cr": 97.97,
    "finance_costs_cr": 7.64,
    "exceptional_cr": 0.0,
@@ -60,7 +60,7 @@
    "filing": "https://nsearchives.nseindia.com/corporate/ixbrl/INTEGRATED_FILING_INDAS_140685_05022026213814_iXBRL_WEB.html",
    "revenue_cr": 556.46,
    "ebitda_cr": 187.85,
-   "pat_cr": 0.0,
+   "pat_cr": 100.38,
    "pbt_cr": 134.17,
    "finance_costs_cr": 9.7,
    "exceptional_cr": -8.29,
@@ -77,7 +77,7 @@
    "filing": "https://nsearchives.nseindia.com/corporate/ixbrl/INTEGRATED_FILING_INDAS_124958_06112025203634_iXBRL_WEB.html",
    "revenue_cr": 537.47,
    "ebitda_cr": 145.82,
-   "pat_cr": 0.0,
+   "pat_cr": 83.84,
    "pbt_cr": 112.05,
    "finance_costs_cr": 9.35,
    "exceptional_cr": 0.0,
@@ -118,17 +118,17 @@
   "pat_cr": 98.32,
   "eps": 4.63,
   "revenue_yoy": 22.5,
-  "pat_yoy": null,
+  "pat_yoy": 17.3,
   "ebitda_yoy": 27.8,
   "margin_yoy_pts": 1.2,
   "revenue_qoq": 18.8,
-  "pat_qoq": null,
+  "pat_qoq": 34.2,
   "exceptional_cr": 0.0,
   "yoy_base_qe": "2025-09-30"
  },
  "ttm": {
   "eps": 17.79,
-  "pat_cr": 202.56,
+  "pat_cr": 376.22,
   "ebit_cr": 538.76,
   "quarters": [
    "2026-09-30",
@@ -136,7 +136,7 @@
    "2026-03-31",
    "2025-12-31"
   ],
-  "roe": 7.5,
+  "roe": 14.0,
   "roce": 17.2
  },
  "balance_sheet": {
