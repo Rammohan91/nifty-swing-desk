@@ -50,11 +50,14 @@ Steps:
    (out_dir `out/export`). Then:
    `python evaluate.py --data ../data --date D --report out/report.json --signals-in out/export/signals --trades-in out/export/trades --out out/eval`
 
-5. Research (WebSearch / WebFetch). Read `out/report.json`. For each actionable opportunity and the
-   top 5 watchlist names:
-   - Latest quarterly results (revenue, EBITDA margin, PAT growth, ROE/ROCE, debt/equity), valuation
-     (P/E, P/B, EV/EBITDA vs peers), promoter holding change and pledge, governance flags.
-     Prefer NSE/BSE filings and company releases; screener-type sites are acceptable with the source named.
+5. Research (WebSearch / WebFetch). Read `out/report.json`. Each opportunity and watchlist entry already
+   carries `fundamentals` parsed from NSE filings (results XBRL, shareholding, pledge, P/E, P/B, ROE, ROCE,
+   results calendar) and rule-based `flags`. Use those numbers as they are; do not re-enter or overwrite
+   them, and do not put numeric fundamentals in research.json for a symbol that already has them.
+   For each actionable opportunity and the top 5 watchlist names, research what filings do not show:
+   - Management commentary and guidance, order wins, regulatory or legal matters, auditor changes,
+     and how the valuation compares with listed peers (name the peers and the source).
+     Prefer NSE/BSE filings and company releases; other sites are acceptable with the source named.
    - Exchange announcements and credible news from the last ~10 days; upcoming results or board
      meetings inside the next 10 sessions.
    - Market context: US and Asian close, crude, USD/INR, gold, Fed/RBI items, India macro releases

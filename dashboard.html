@@ -447,18 +447,39 @@ function qualityBlock(q){
   return `<div class="qbars">${q.components.map(c=>`<div class="qbar"><span>${esc(c.name)}</span><div class="track"><div class="fill" style="width:${Math.round(c.value*100)}%"></div></div><span class="mono muted">${Math.round(c.value*c.weight)}/${c.weight}</span></div>`).join("")}</div>
   <p class="note" style="margin:8px 0 0">Strongest: ${q.strongest.map(esc).join(", ")}. Weakest: ${q.weakest.map(esc).join(", ")}. ${esc(q.note)}</p>`;
 }
-function researchBlock(sym,r){
+function filedBlock(f){
+  if(!f)return "";
+  const row=(k,v)=>`<dt>${k}</dt><dd>${v}</dd>`;
+  const pp=(v,d=1)=>v==null?"—":pct(v,d);
+  const trend=(f.trend||[]).length?`<div class="tbl-wrap" style="margin-top:8px"><table><thead><tr><th>Quarter</th><th class="num">Revenue ₹ cr</th><th class="num">PAT ₹ cr</th>${f.financial?"":'<th class="num">EBITDA %</th>'}</tr></thead><tbody>${f.trend.map(t=>`<tr><td class="mono">${esc(t[0])}</td><td class="num">${fmt(t[1],0)}</td><td class="num">${fmt(t[2],0)}</td>${f.financial?"":`<td class="num">${t[3]==null?"—":fmt(t[3],1)}</td>`}</tr>`).join("")}</tbody></table></div>`:"";
+  return `<div style="margin-bottom:10px">${(f.flags||[]).map(x=>`<span class="flag">${esc(x)}</span>`).join("")}
+  <dl class="kv">
+    ${row("Latest quarter",`${esc(f.as_of_quarter||"—")} · ${f.consolidated?"consolidated":"standalone"}`)}
+    ${row("Revenue",`₹${fmt(f.revenue_cr,0)} cr · YoY ${pp(f.revenue_yoy)} · QoQ ${pp(f.revenue_qoq)}`)}
+    ${f.financial?"":row("EBITDA margin",`${f.ebitda_margin==null?"—":fmt(f.ebitda_margin,1)+"%"}${f.margin_yoy_pts==null?"":` (${f.margin_yoy_pts>0?"+":""}${fmt(f.margin_yoy_pts,1)} pts YoY)`}`)}
+    ${row("PAT",`₹${fmt(f.pat_cr,0)} cr · YoY ${pp(f.pat_yoy)} · QoQ ${pp(f.pat_qoq)}`)}
+    ${row("P/E (TTM) · P/B",`${f.pe==null?"—":fmt(f.pe,1)} · ${f.pb==null?"—":fmt(f.pb,1)}`)}
+    ${row("Market cap",f.mcap_cr==null?"—":"₹"+fmt(f.mcap_cr,0)+" cr")}
+    ${row(f.financial?"ROE (TTM)":"ROE · ROCE (TTM)",f.financial?(f.roe==null?"—":fmt(f.roe,1)+"%"):`${f.roe==null?"—":fmt(f.roe,1)+"%"} · ${f.roce==null?"—":fmt(f.roce,1)+"%"}`)}
+    ${f.financial?row("Gross NPA",f.gross_npa_pct==null?"not in consolidated filing":fmt(f.gross_npa_pct,2)+"%"):row("Debt/equity · OCF/PAT",`${f.de==null?"—":fmt(f.de,2)} · ${f.ocf_to_pat==null?"—":fmt(f.ocf_to_pat,2)}`)}
+    ${row("Promoter holding",f.promoter_pct==null?"—":`${fmt(f.promoter_pct,2)}%${f.promoter_change_pts==null?"":` (${f.promoter_change_pts>0?"+":""}${fmt(f.promoter_change_pts,2)} pts QoQ)`}`)}
+    ${row("Promoter shares encumbered",f.promoter_encumbered_pct==null?"—":fmt(f.promoter_encumbered_pct,2)+"%")}
+    ${(f.upcoming||[]).length?row("Upcoming",f.upcoming.map(e=>`${esc(e.date)} ${esc(e.purpose||"")}`).join("; ")):""}
+  </dl>${trend}
+  <p class="note" style="margin:6px 0 0">From NSE filings${f.filing?` · <a href="${esc(f.filing)}" target="_blank" rel="noopener">latest results filing</a>`:""} · fetched ${esc((f.fetched_at||"").slice(0,10))}. P/E and P/B use the session close.${f.note?" "+esc(f.note):""}${(f.missing||[]).length?" Missing: "+esc(f.missing.join("; "))+".":""}</p></div>`;
+}
+function researchBlock(sym,r,o){
   const R=(r.research||{})[sym]; const news=(r.news||[]).filter(n=>n.symbol===sym);
-  if(!R&&!news.length)return `<p class="note">No fundamental or news research stored for ${esc(sym)} in this report.</p>`;
-  let h="";
+  const F=o&&o.fundamentals; let h=filedBlock(F);
+  if(!R&&!news.length&&!F)return `<p class="note">No fundamentals or news stored for ${esc(sym)} in this report.</p>`;
   if(R){const fd=R.fundamentals||{},v=R.valuation||{},g=R.governance||{};
     if(R.veto)h+=`<div class="warnbox"><b>Research veto:</b> ${esc(R.veto.reason)}</div>`;
     if(g.flags&&g.flags.length)h+=`<div>${g.flags.map(x=>`<span class="flag">${esc(x)}</span>`).join("")}</div>`;
-    h+=`<p style="margin:6px 0">${esc(R.summary||"")}</p><dl class="kv">
+    h+=`<p style="margin:6px 0">${esc(R.summary||"")}</p>${F?"":`<dl class="kv">
       <dt>Results as of</dt><dd>${esc(fd.as_of||"—")}</dd><dt>Revenue YoY</dt><dd>${pct(fd.revenue_yoy,1)}</dd><dt>EBITDA margin</dt><dd>${fmt(fd.ebitda_margin,1)}%</dd><dt>PAT YoY</dt><dd>${pct(fd.pat_yoy,1)}</dd>
       <dt>ROE / ROCE</dt><dd>${fmt(fd.roe,1)}% / ${fmt(fd.roce,1)}%</dd><dt>Debt / equity</dt><dd>${fmt(fd.de)}</dd><dt>P/E · P/B · EV/EBITDA</dt><dd>${fmt(v.pe,1)} · ${fmt(v.pb,1)} · ${fmt(v.ev_ebitda,1)}</dd>
       <dt>Promoter pledge</dt><dd>${g.pledge_pct==null?"—":fmt(g.pledge_pct,1)+"%"}</dd><dt>Promoter holding</dt><dd>${esc(g.promoter_change||"—")}</dd></dl>
-      ${v.note?`<p class="note">${esc(v.note)}</p>`:""}
+      ${v.note?`<p class="note">${esc(v.note)}</p>`:""}`}
       ${(R.catalysts||[]).length?`<p style="margin:6px 0 2px"><b>Catalysts</b></p><ul class="ev">${R.catalysts.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:""}
       ${(R.upcoming||[]).length?`<p style="margin:6px 0 2px"><b>Upcoming</b></p><ul class="ev">${R.upcoming.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:""}
       ${(R.risks||[]).length?`<p style="margin:6px 0 2px"><b>Key risks</b></p><ul class="ev">${R.risks.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:""}
@@ -486,7 +507,7 @@ function oppCard(o,r,open){
     </div>
     <div><h3 style="margin-bottom:6px">Research quality</h3>${qualityBlock(o.quality)}</div>
     <div><h3 style="margin-bottom:6px">Cancel the trade if</h3><ul class="ev">${CANCEL.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
-    <div><h3 style="margin-bottom:6px">Catalysts & fundamentals</h3>${researchBlock(o.symbol,r)}</div>
+    <div><h3 style="margin-bottom:6px">Catalysts & fundamentals</h3>${researchBlock(o.symbol,r,o)}</div>
     <div><h3 style="margin-bottom:6px">Final assessment</h3><p style="margin:0">${esc(o.assessment||autoAssess(o,r))}</p>
       <div class="toolbar" style="margin-top:10px"><button class="btn small" data-track="${esc(o.symbol)}">Add to Trade Tracker</button><a class="btn small" href="#research" data-open-sym="${esc(o.symbol)}">Open research view</a></div></div>
   </div></details>`;
@@ -516,8 +537,12 @@ function vResearch(r){
   const o=pool.find(p=>p.symbol===sym);
   const row=sc&&sc.rows.find(x=>x[0]===sym);
   let body="";
-  if(o){body=oppCard(o,r,true);}
-  else if(row){const C=sc.cols;body=`<div class="panel"><h2>${esc(sym)}</h2><p class="note">No setup rule matched ${esc(sym)} this session, so there is no trade plan or stored chart. Indicator snapshot:</p><dl class="kv">${C.slice(1).map((c,i)=>`<dt>${TIPS[c]?tip(c,c):esc(c)}</dt><dd>${esc(row[i+1]==null?"—":row[i+1])}</dd>`).join("")}</dl><div style="margin-top:10px">${researchBlock(sym,r)}</div></div>`;}
+  const isAct=r.opportunities.some(x=>x.symbol===sym), rej=r.rejected.find(x=>x.symbol===sym);
+  const banner=isAct?`<div class="notrade" style="border-left-color:var(--up)"><b>Actionable — rank ${o.rank} in Trade Opportunities.</b> <span class="note">Entry rules are on the card below.</span></div>`
+    :o?`<div class="notrade"><b>Watchlist — not actionable.</b> <span class="note">${esc((o.blocked_by&&o.blocked_by.length?o.blocked_by:[o.need||"Setup still developing"]).join("; "))}. The levels below show what the setup would need; they are not an entry.</span></div>`
+    :rej?`<div class="notrade" style="border-left-color:var(--down)"><b>Rejected.</b> <span class="note">${esc(rej.reasons.join("; "))}</span></div>`:"";
+  if(o){body=banner+oppCard(o,r,true);}
+  else if(row){const C=sc.cols;body=`<div class="panel"><h2>${esc(sym)}</h2><p class="note">No setup rule matched ${esc(sym)} this session, so there is no trade plan or stored chart. Indicator snapshot:</p><dl class="kv">${C.slice(1).map((c,i)=>`<dt>${TIPS[c]?tip(c,c):esc(c)}</dt><dd>${esc(row[i+1]==null?"—":row[i+1])}</dd>`).join("")}</dl><div style="margin-top:10px">${researchBlock(sym,r,null)}</div></div>`;}
   else body=`<div class="empty">Pick a symbol.</div>`;
   return `<div class="head"><div><h1>Stock Research</h1>${asOf(r)}</div>
     <div class="toolbar"><label for="symPick">Symbol</label><input list="symList" id="symPick" value="${esc(sym||"")}" style="width:150px" class="mono"><datalist id="symList">${all.map(s=>`<option value="${esc(s)}">`).join("")}</datalist></div></div>${body}`;
@@ -605,7 +630,8 @@ function vHealth(r){
     <div class="tile"><div class="k">Last run</div><div class="v" style="font-size:15px">${esc(st.last_run_status||"none")}</div><div class="s">${esc((st.last_run_at||"").replace("T"," ").slice(0,16))}</div></div>
     <div class="tile"><div class="k">Last successful update</div><div class="v" style="font-size:15px">${esc((st.last_success_at||"—").replace("T"," ").slice(0,16))}</div><div class="s">IST</div></div>
     <div class="tile"><div class="k">Scan completeness</div><div class="v">${sc?sc.scanned+"/"+sc.universe:"—"}</div><div class="s">${sc?(sc.scanned>=sc.universe?"complete":"incomplete — see below"):""}</div></div>
-    <div class="tile"><div class="k">Schedule</div><div class="v" style="font-size:15px">Mon–Fri 16:15</div><div class="s">IST, skips NSE holidays</div></div>
+    <div class="tile"><div class="k">Schedule</div><div class="v" style="font-size:15px">Mon–Fri 19:45</div><div class="s">IST, after NSE publishes closing files</div></div>
+    <div class="tile"><div class="k">Fundamentals coverage</div><div class="v">${r&&r.fundamentals_status&&r.fundamentals_status.covered_symbols!=null?r.fundamentals_status.covered_symbols+"/"+r.scan.universe:"—"}</div><div class="s">NSE filings; results within ${r&&r.fundamentals_status?r.fundamentals_status.results_window_days||14:14} days block entry</div></div>
   </div>
   ${st.last_error?`<div class="warnbox"><b>Last error:</b> ${esc(st.last_error)}</div>`:""}
   ${sc&&(sc.skipped.length||sc.corporate_action_suspects.length||sc.received<sc.universe)?`<section class="panel"><h2 style="margin-bottom:8px">Missing or excluded data</h2>

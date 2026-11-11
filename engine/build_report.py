@@ -234,11 +234,20 @@ def main():
     report, screener = build(raw, idx_frames, sector_of, names, universe, flows, market_date, a.sample, sources)
     report, screener = clean(json.loads(json.dumps(report, default=jdefault))), \
         clean(json.loads(json.dumps(screener, default=jdefault)))
+    if not a.sample:
+        from fundamentals import attach
+        report = attach(report, a.data)
+        if report["fundamentals_status"]["available"]:
+            report["sources"].append(dict(name="NSE Integrated Filing XBRL, shareholding and pledge disclosures",
+                                          url="https://www.nseindia.com/companies-listing/corporate-integrated-filing",
+                                          retrieved_at=now_ist(), final=True,
+                                          note="Per-stock fetch dates are on each card"))
     rp, sp = os.path.join(a.out, "report.json"), os.path.join(a.out, "screener.json")
     json.dump(report, open(rp, "w"), separators=(",", ":"))
     json.dump(screener, open(sp, "w"), separators=(",", ":"))
     print(json.dumps(dict(status="ok", market_date=market_date, regime=report["regime"]["label"],
                           actionable=[o["symbol"] for o in report["opportunities"]],
+                          fundamentals=report.get("fundamentals_status"),
                           watchlist=len(report["watchlist"]), scanned=report["scan"]["scanned"],
                           universe=report["scan"]["universe"],
                           report_kb=round(os.path.getsize(rp) / 1024, 1),
