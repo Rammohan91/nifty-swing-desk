@@ -1,0 +1,35 @@
+name: Fetch NSE end-of-day data
+
+on:
+  schedule:
+    # 18:35 and 19:35 IST, Mon–Fri (NSE publishes bhavcopy and index closes in the evening)
+    - cron: "5 13 * * 1-5"
+    - cron: "5 14 * * 1-5"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fetch
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests==2.32.3
+      - name: Fetch
+        run: python fetch_nse.py
+      - name: Commit data
+        run: |
+          git config user.name "nse-fetch-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data
+          git diff --cached --quiet || git commit -m "EOD data $(TZ=Asia/Kolkata date +%F)"
+          git push
