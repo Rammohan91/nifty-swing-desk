@@ -86,6 +86,9 @@ def main():
         for k in ("plan", "quality", "status", "strategy", "close", "support", "resistance", "evidence"):
             if o[k] != b[k]:
                 fail(f"{o['symbol']}.{k} changed during research merge")
+    size = len(json.dumps(out, separators=(",", ":")).encode())
+    if size > 250_000:
+        fail(f"merged report is {size // 1024} KB; the dashboard limit is 256 KB — shorten news and research text")
     json.dump(out, open(a.out, "w"), separators=(",", ":"))
     print(json.dumps(dict(status="ok", actionable=[o["symbol"] for o in keep], vetoed=vetoed,
                           news=len(out["news"]), researched=len(out["research"]))))

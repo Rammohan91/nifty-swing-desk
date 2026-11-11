@@ -242,6 +242,13 @@ def main():
                                           url="https://www.nseindia.com/companies-listing/corporate-integrated-filing",
                                           retrieved_at=now_ist(), final=True,
                                           note="Per-stock fetch dates are on each card"))
+    # the dashboard stores each report as one document (256 KB cap); research adds ~40-60 KB later,
+    # so keep the engine output under ~180 KB by shortening chart history on lower-ranked watchlist names
+    budget = 180_000
+    for o in reversed(report["watchlist"]):
+        if len(json.dumps(report, separators=(",", ":"))) <= budget:
+            break
+        o["bars"] = o["bars"][-20:]
     rp, sp = os.path.join(a.out, "report.json"), os.path.join(a.out, "screener.json")
     json.dump(report, open(rp, "w"), separators=(",", ":"))
     json.dump(screener, open(sp, "w"), separators=(",", ":"))
