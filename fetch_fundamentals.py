@@ -11,11 +11,15 @@ Sources (all public, no login):
 Writes data/fundamentals/{SYMBOL}.json and data/fundamentals/_index.json. Parsed XBRL is cached
 in data/fundamentals/_xbrl/{seq}.json so a filing is downloaded once.
 
-Refresh policy per run (keeps each run under ~30 minutes):
-  1. symbols with a new financial-results filing in the last 4 days (one market-wide request),
-  2. symbols never fetched,
-  3. the stalest files older than 7 days,
-  capped at MAX_SYMBOLS per run. The calendar is refreshed market-wide every run.
+Two modes:
+  --shortlist FILE  (daily, run by the EOD workflow) only the symbols the engine shortlisted that day
+                    (actionable + watchlist). A symbol is refreshed when it has no file, its file is
+                    older than 3 days, or it filed new results in the last 4 days. Filings already
+                    parsed are cached, so names that stay on the list cost two or three requests.
+  no arguments      full-universe refresh (never-fetched first, then the stalest), capped at
+                    MAX_SYMBOLS. Kept for a future full-market fundamental screen; not scheduled.
+  SYMBOL ...        debug: fetch the given symbols now.
+The board-meeting calendar is refreshed market-wide (one request) in every mode except debug.
 """
 from __future__ import annotations
 
@@ -451,8 +455,47 @@ def main():
     print(json.dumps({k: v for k, v in status.items() if k != "new_filers"}))
 
 
+def shortlist_mode(path):
+    import csv
+    os.makedirs(OUT, exist_ok=True)
+    rows = list(csv.DictReader(open(f"{DATA}/nifty500.csv")))
+    fin = {r["Symbol"] for r in rows if r.get("Industry") == "Financial Services"}
+    want = json.load(open(path)).get("symbols", [])
+    idx_p = f"{OUT}/_index.json"
+    index = json.load(open(idx_p)) if os.path.exists(idx_p) else {}
+    now = dt.datetime.now(IST)
+    cal = calendar()
+    json.dump(dict(fetched_at=now.isoformat(timespec="seconds"), events=cal), open(f"{OUT}/_calendar.json", "w"))
+    fresh = recent_filers()
+
+    def stale(s):
+        t = index.get(s, {}).get("fetched_at")
+        return not t or (now - dt.datetime.fromisoformat(t)).days >= 3 or s in fresh
+
+    done, skipped, failed = [], [], []
+    for s in want:
+        if not stale(s):
+            skipped.append(s)
+            continue
+        try:
+            rec = build_symbol(s, financial=s in fin)
+            json.dump(rec, open(f"{OUT}/{s}.json", "w"), separators=(",", ":"))
+            index[s] = dict(fetched_at=rec["fetched_at"], latest_qe=(rec.get("latest") or {}).get("qe"),
+                            missing=rec["missing"])
+            done.append(s)
+        except Exception as e:
+            failed.append(dict(symbol=s, error=str(e)[:200]))
+    json.dump(index, open(idx_p, "w"), separators=(",", ":"))
+    status = dict(run_at=now.isoformat(timespec="seconds"), mode="shortlist", shortlist=len(want),
+                  refreshed=done, up_to_date=len(skipped), failed=failed, calendar_symbols=len(cal))
+    json.dump(status, open(f"{OUT}/_last_run.json", "w"), indent=1)
+    print(json.dumps(dict(status, refreshed=len(done))))
+
+
 if __name__ == "__main__":
-    if len(sys.argv) > 1:                # debug: python fetch_fundamentals.py SAILIFE HDFCBANK
+    if len(sys.argv) > 2 and sys.argv[1] == "--shortlist":
+        shortlist_mode(sys.argv[2])
+    elif len(sys.argv) > 1:                # debug: python fetch_fundamentals.py SAILIFE HDFCBANK
         os.makedirs(OUT, exist_ok=True)
         import csv
         fin = {r["Symbol"] for r in csv.DictReader(open(f"{DATA}/nifty500.csv")) if r.get("Industry") == "Financial Services"}

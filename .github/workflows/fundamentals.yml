@@ -1,9 +1,8 @@
 name: Fetch NSE fundamentals
 
+# Manual only. The daily fundamentals refresh for shortlisted stocks runs inside "Fetch NSE end-of-day
+# data". This workflow is for debugging symbols or a one-off full-universe pull.
 on:
-  schedule:
-    # 17:35 IST Mon–Sat: new results filings, shareholding, pledges and the board-meeting calendar
-    - cron: "5 12 * * 1-6"
   workflow_dispatch:
     inputs:
       symbols:

@@ -23,9 +23,22 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install requests==2.32.3
-      - name: Fetch
+      - run: pip install requests==2.32.3 curl_cffi==0.7.4 pandas numpy
+      - name: Fetch prices
         run: python fetch_nse.py
+      - name: Shortlist and fundamentals
+        # Runs the engine to find today's actionable + watchlist names, then fetches their filings.
+        # A failure here never blocks the price data from being saved.
+        continue-on-error: true
+        run: |
+          D=$(python -c "import json;d=json.load(open('data/last_fetch.json'));print(d['today'] if d['today_status']=='traded' else '')")
+          if [ -n "$D" ]; then
+            python engine/build_report.py --data data --date "$D" --out /tmp/out
+            python tools/shortlist.py /tmp/out/report.json data/shortlist.json
+            python fetch_fundamentals.py --shortlist data/shortlist.json
+          else
+            echo "No session today; skipping shortlist."
+          fi
       - name: Commit data
         run: |
           git config user.name "nse-fetch-bot"

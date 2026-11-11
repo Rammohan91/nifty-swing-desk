@@ -631,7 +631,7 @@ function vHealth(r){
     <div class="tile"><div class="k">Last successful update</div><div class="v" style="font-size:15px">${esc((st.last_success_at||"—").replace("T"," ").slice(0,16))}</div><div class="s">IST</div></div>
     <div class="tile"><div class="k">Scan completeness</div><div class="v">${sc?sc.scanned+"/"+sc.universe:"—"}</div><div class="s">${sc?(sc.scanned>=sc.universe?"complete":"incomplete — see below"):""}</div></div>
     <div class="tile"><div class="k">Schedule</div><div class="v" style="font-size:15px">Mon–Fri 19:45</div><div class="s">IST, after NSE publishes closing files</div></div>
-    <div class="tile"><div class="k">Fundamentals coverage</div><div class="v">${r&&r.fundamentals_status&&r.fundamentals_status.covered_symbols!=null?r.fundamentals_status.covered_symbols+"/"+r.scan.universe:"—"}</div><div class="s">NSE filings; results within ${r&&r.fundamentals_status?r.fundamentals_status.results_window_days||14:14} days block entry</div></div>
+    <div class="tile"><div class="k">Fundamentals coverage</div><div class="v">${r&&r.fundamentals_status&&r.fundamentals_status.shortlisted!=null?r.fundamentals_status.attached+"/"+r.fundamentals_status.shortlisted:"—"}</div><div class="s">shortlisted stocks with NSE filings; results within ${r&&r.fundamentals_status?r.fundamentals_status.results_window_days||14:14} days block entry</div></div>
   </div>
   ${st.last_error?`<div class="warnbox"><b>Last error:</b> ${esc(st.last_error)}</div>`:""}
   ${sc&&(sc.skipped.length||sc.corporate_action_suspects.length||sc.received<sc.universe)?`<section class="panel"><h2 style="margin-bottom:8px">Missing or excluded data</h2>

@@ -114,8 +114,7 @@ def attach(report, data_dir):
         have += f is not None
         if block and block not in o.get("blocked_by", []):
             o.setdefault("blocked_by", []).append(block)
-    idx_p = os.path.join(base, "_index.json")
-    covered = len(json.load(open(idx_p))) if os.path.exists(idx_p) else None
-    report["fundamentals_status"] = dict(available=True, covered_symbols=covered, attached=have,
+    shortlisted = len(report["opportunities"]) + len([o for o in report["watchlist"] if "fundamentals" in o])
+    report["fundamentals_status"] = dict(available=True, shortlisted=shortlisted, attached=have,
                                          calendar_symbols=len(cal), results_window_days=RESULTS_WINDOW_DAYS)
     return report
