@@ -1,0 +1,178 @@
+[
+ {
+  "name": "SAILIFE_quote",
+  "url": "https://www.nseindia.com/api/quote-equity?symbol=SAILIFE",
+  "status": 403,
+  "bytes": 399,
+  "ctype": "text/html"
+ },
+ {
+  "name": "SAILIFE_trade_info",
+  "url": "https://www.nseindia.com/api/quote-equity?symbol=SAILIFE&section=trade_info",
+  "status": 403,
+  "bytes": 399,
+  "ctype": "text/html"
+ },
+ {
+  "name": "SAILIFE_results",
+  "url": "https://www.nseindia.com/api/corporates-financial-results?index=equities&symbol=SAILIFE&period=Quarterly",
+  "status": 200,
+  "bytes": 1523,
+  "ctype": "application/json; charset=utf-8"
+ },
+ {
+  "name": "SAILIFE_results_count",
+  "n": 2,
+  "keys": [
+   "audited",
+   "bank",
+   "broadCastDate",
+   "companyName",
+   "consolidated",
+   "cumulative",
+   "difference",
+   "exchdisstime",
+   "filingDate",
+   "financialYear",
+   "format",
+   "fromDate",
+   "indAs",
+   "industry",
+   "isin",
+   "oldNewFlag",
+   "params",
+   "period",
+   "reInd",
+   "relatingTo",
+   "resultDescription",
+   "resultDetailedDataLink",
+   "seqNumber",
+   "symbol",
+   "toDate",
+   "xbrl"
+  ]
+ },
+ {
+  "name": "SAILIFE_xbrl_0_Cons",
+  "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_119051_1374417_07022025040212.xml",
+  "status": 200,
+  "bytes": 27462,
+  "ctype": "application/xml"
+ },
+ {
+  "name": "SAILIFE_xbrl_1_Non-",
+  "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_119050_1374408_07022025040024.xml",
+  "status": 200,
+  "bytes": 24565,
+  "ctype": "application/xml"
+ },
+ {
+  "name": "SAILIFE_shp",
+  "url": "https://www.nseindia.com/api/corporate-share-holdings-master?index=equities&symbol=SAILIFE",
+  "status": 200,
+  "bytes": 10321,
+  "ctype": "application/json; charset=utf-8"
+ },
+ {
+  "name": "SAILIFE_pledge",
+  "url": "https://www.nseindia.com/api/corporate-pledgedata?index=equities&symbol=SAILIFE",
+  "status": 200,
+  "bytes": 644,
+  "ctype": "application/json; charset=utf-8"
+ },
+ {
+  "name": "SAILIFE_annc",
+  "url": "https://www.nseindia.com/api/corporate-announcements?index=equities&symbol=SAILIFE",
+  "status": 200,
+  "bytes": 182157,
+  "ctype": "application/json; charset=utf-8"
+ },
+ {
+  "name": "SHYAMMETL_quote",
+  "url": "https://www.nseindia.com/api/quote-equity?symbol=SHYAMMETL",
+  "status": 403,
+  "bytes": 399,
+  "ctype": "text/html"
+ },
+ {
+  "name": "SHYAMMETL_trade_info",
+  "url": "https://www.nseindia.com/api/quote-equity?symbol=SHYAMMETL&section=trade_info",
+  "status": 403,
+  "bytes": 399,
+  "ctype": "text/html"
+ },
+ {
+  "name": "SHYAMMETL_results",
+  "url": "https://www.nseindia.com/api/corporates-financial-results?index=equities&symbol=SHYAMMETL&period=Quarterly",
+  "status": 200,
+  "bytes": 24649,
+  "ctype": "application/json; charset=utf-8"
+ },
+ {
+  "name": "SHYAMMETL_results_count",
+  "n": 32,
+  "keys": [
+   "audited",
+   "bank",
+   "broadCastDate",
+   "companyName",
+   "consolidated",
+   "cumulative",
+   "difference",
+   "exchdisstime",
+   "filingDate",
+   "financialYear",
+   "format",
+   "fromDate",
+   "indAs",
+   "industry",
+   "isin",
+   "oldNewFlag",
+   "params",
+   "period",
+   "reInd",
+   "relatingTo",
+   "resultDescription",
+   "resultDetailedDataLink",
+   "seqNumber",
+   "symbol",
+   "toDate",
+   "xbrl"
+  ]
+ },
+ {
+  "name": "SHYAMMETL_xbrl_0_Cons",
+  "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_121000_1393480_07032025123734.xml",
+  "status": 200,
+  "bytes": 22581,
+  "ctype": "application/xml"
+ },
+ {
+  "name": "SHYAMMETL_xbrl_1_Non-",
+  "url": "https://nsearchives.nseindia.com/corporate/xbrl/INDAS_120999_1393477_07032025123452.xml",
+  "status": 200,
+  "bytes": 21231,
+  "ctype": "application/xml"
+ },
+ {
+  "name": "SHYAMMETL_shp",
+  "url": "https://www.nseindia.com/api/corporate-share-holdings-master?index=equities&symbol=SHYAMMETL",
+  "status": 200,
+  "bytes": 19294,
+  "ctype": "application/json; charset=utf-8"
+ },
+ {
+  "name": "SHYAMMETL_pledge",
+  "url": "https://www.nseindia.com/api/corporate-pledgedata?index=equities&symbol=SHYAMMETL",
+  "status": 200,
+  "bytes": 662,
+  "ctype": "application/json; charset=utf-8"
+ },
+ {
+  "name": "SHYAMMETL_annc",
+  "url": "https://www.nseindia.com/api/corporate-announcements?index=equities&symbol=SHYAMMETL",
+  "status": 200,
+  "bytes": 510411,
+  "ctype": "application/json; charset=utf-8"
+ }
+]
