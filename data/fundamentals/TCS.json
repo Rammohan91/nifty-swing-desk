@@ -1,0 +1,195 @@
+{
+ "symbol": "TCS",
+ "fetched_at": "2026-11-11T23:53:59+05:30",
+ "quarters": [
+  {
+   "qe": "2026-09-30",
+   "consolidated": true,
+   "filed": "08-Oct-2026 22:07:33",
+   "filing": "https://nsearchives.nseindia.com/corporate/ixbrl/INTEGRATED_FILING_INDAS_200121_08102026220810_iXBRL_WEB.html",
+   "revenue_cr": 73188.0,
+   "ebitda_cr": 18815.0,
+   "pat_cr": 13884.0,
+   "pbt_cr": 18638.0,
+   "finance_costs_cr": 252.0,
+   "exceptional_cr": 0.0,
+   "eps": 38.37,
+   "ebitda_margin": 25.7,
+   "paid_up_capital": 3620000000.0,
+   "face_value": 1.0,
+   "derived_from_half_year": false
+  },
+  {
+   "qe": "2026-06-30",
+   "consolidated": true,
+   "filed": "09-Jul-2026 18:36:12",
+   "filing": "https://nsearchives.nseindia.com/corporate/ixbrl/INTEGRATED_FILING_INDAS_173420_09072026183620_iXBRL_WEB.html",
+   "revenue_cr": 72275.0,
+   "ebitda_cr": 18556.0,
+   "pat_cr": 13349.0,
+   "pbt_cr": 17944.0,
+   "finance_costs_cr": 273.0,
+   "exceptional_cr": -668.0,
+   "eps": 36.9,
+   "ebitda_margin": 25.7,
+   "paid_up_capital": 3620000000.0,
+   "face_value": 1.0,
+   "derived_from_half_year": false
+  },
+  {
+   "qe": "2026-03-31",
+   "consolidated": true,
+   "filed": "09-Apr-2026 23:42:16",
+   "filing": "https://nsearchives.nseindia.com/corporate/ixbrl/INTEGRATED_FILING_INDAS_150312_09042026234218_iXBRL_WEB.html",
+   "revenue_cr": 70698.0,
+   "ebitda_cr": 19276.0,
+   "pat_cr": 13718.0,
+   "pbt_cr": 18362.0,
+   "finance_costs_cr": 265.0,
+   "exceptional_cr": 0.0,
+   "eps": 37.92,
+   "ebitda_margin": 27.3,
+   "paid_up_capital": 3620000000.0,
+   "face_value": 1.0,
+   "derived_from_half_year": false
+  },
+  {
+   "qe": "2025-12-31",
+   "consolidated": true,
+   "filed": "12-Jan-2026 18:43:11",
+   "filing": "https://nsearchives.nseindia.com/corporate/ixbrl/INTEGRATED_FILING_INDAS_134548_12012026184316_iXBRL_WEB.html",
+   "revenue_cr": 67087.0,
+   "ebitda_cr": 18269.0,
+   "pat_cr": 10657.0,
+   "pbt_cr": 14078.0,
+   "finance_costs_cr": 538.0,
+   "exceptional_cr": -3391.0,
+   "eps": 29.45,
+   "ebitda_margin": 27.2,
+   "paid_up_capital": 3620000000.0,
+   "face_value": 1.0,
+   "derived_from_half_year": false
+  },
+  {
+   "qe": "2025-09-30",
+   "consolidated": true,
+   "filed": "09-Oct-2025 23:56:24",
+   "filing": "https://nsearchives.nseindia.com/corporate/ixbrl/INTEGRATED_FILING_INDAS_119003_09102025235624_iXBRL_WEB.html",
+   "revenue_cr": 65799.0,
+   "ebitda_cr": 17978.0,
+   "pat_cr": 12075.0,
+   "pbt_cr": 16068.0,
+   "finance_costs_cr": 229.0,
+   "exceptional_cr": -1135.0,
+   "eps": 33.37,
+   "ebitda_margin": 27.3,
+   "paid_up_capital": 3620000000.0,
+   "face_value": 1.0,
+   "derived_from_half_year": false
+  },
+  {
+   "qe": "2025-06-30",
+   "consolidated": true,
+   "filed": "10-Jul-2025 18:40:11",
+   "filing": "https://nsearchives.nseindia.com/corporate/ixbrl/INTEGRATED_FILING_INDAS_102387_10072025184012_iXBRL_WEB.html",
+   "revenue_cr": 63437.0,
+   "ebitda_cr": 16875.0,
+   "pat_cr": 12760.0,
+   "pbt_cr": 16979.0,
+   "finance_costs_cr": 195.0,
+   "exceptional_cr": 0.0,
+   "eps": 35.27,
+   "ebitda_margin": 26.6,
+   "paid_up_capital": 3620000000.0,
+   "face_value": 1.0,
+   "derived_from_half_year": false
+  }
+ ],
+ "missing": [],
+ "financial": false,
+ "latest": {
+  "qe": "2026-09-30",
+  "consolidated": true,
+  "filed": "08-Oct-2026 22:07:33",
+  "filing": "https://nsearchives.nseindia.com/corporate/ixbrl/INTEGRATED_FILING_INDAS_200121_08102026220810_iXBRL_WEB.html",
+  "revenue_cr": 73188.0,
+  "ebitda_cr": 18815.0,
+  "ebitda_margin": 25.7,
+  "pat_cr": 13884.0,
+  "eps": 38.37,
+  "revenue_yoy": 11.2,
+  "pat_yoy": 15.0,
+  "ebitda_yoy": 4.7,
+  "margin_yoy_pts": -1.6,
+  "revenue_qoq": 1.3,
+  "pat_qoq": 4.0,
+  "exceptional_cr": 0.0,
+  "yoy_base_qe": "2025-09-30"
+ },
+ "ttm": {
+  "eps": 142.64,
+  "pat_cr": 51608.0,
+  "ebit_cr": 70350.0,
+  "quarters": [
+   "2026-09-30",
+   "2026-06-30",
+   "2026-03-31",
+   "2025-12-31"
+  ],
+  "roe": 43.4,
+  "roce": 59.1
+ },
+ "balance_sheet": {
+  "as_of": "2026-09-30",
+  "equity_cr": 118986.0,
+  "borrowings_cr": 0.0,
+  "cash_cr": 5106.0,
+  "receivables_cr": 69028.0,
+  "inventories_cr": 28.0,
+  "de": 0.0,
+  "gross_npa_pct": null,
+  "ocf_to_pat_h1": 0.95
+ },
+ "shareholding": {
+  "as_of": "30-SEP-2026",
+  "promoter_pct": 71.77,
+  "promoter_change_pts": 0.0,
+  "history": [
+   [
+    "30-SEP-2026",
+    71.77
+   ],
+   [
+    "30-JUN-2026",
+    71.77
+   ],
+   [
+    "31-MAR-2026",
+    71.77
+   ],
+   [
+    "31-DEC-2025",
+    71.77
+   ],
+   [
+    "30-SEP-2025",
+    71.77
+   ],
+   [
+    "30-JUN-2025",
+    71.77
+   ]
+  ]
+ },
+ "pledge": {
+  "as_of": "30-Sep-2026",
+  "broadcast": "11-Nov-2026 16:31:10",
+  "promoter_encumbered_pct_of_promoter": 0.0,
+  "promoter_encumbered_pct_of_total": 0.0,
+  "shares_outstanding": 3618087518.0
+ },
+ "source": {
+  "name": "NSE Integrated Filing (XBRL), shareholding and pledge disclosures",
+  "url": "https://www.nseindia.com/get-quotes/equity?symbol=TCS"
+ }
+}

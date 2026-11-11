@@ -1,6 +1,6 @@
 {
  "symbol": "SAILIFE",
- "fetched_at": "2026-11-11T23:48:54+05:30",
+ "fetched_at": "2026-11-11T23:52:51+05:30",
  "quarters": [
   {
    "qe": "2026-09-30",
@@ -16,7 +16,8 @@
    "eps": 4.63,
    "ebitda_margin": 28.3,
    "paid_up_capital": 212420000.0,
-   "face_value": 1.0
+   "face_value": 1.0,
+   "derived_from_half_year": false
   },
   {
    "qe": "2026-06-30",
@@ -25,14 +26,15 @@
    "filing": "https://nsearchives.nseindia.com/corporate/ixbrl/INTEGRATED_FILING_INDAS_183494_06082026234731_iXBRL_WEB.html",
    "revenue_cr": 554.28,
    "ebitda_cr": 148.0,
-   "pat_cr": 73.28,
+   "pat_cr": 0.0,
    "pbt_cr": 97.97,
    "finance_costs_cr": 7.64,
    "exceptional_cr": 0.0,
    "eps": 3.46,
    "ebitda_margin": 26.7,
    "paid_up_capital": 212290000.0,
-   "face_value": 1.0
+   "face_value": 1.0,
+   "derived_from_half_year": false
   },
   {
    "qe": "2026-03-31",
@@ -48,7 +50,8 @@
    "eps": 4.93,
    "ebitda_margin": 29.3,
    "paid_up_capital": 211780000.0,
-   "face_value": 1.0
+   "face_value": 1.0,
+   "derived_from_half_year": false
   },
   {
    "qe": "2025-12-31",
@@ -57,14 +60,15 @@
    "filing": "https://nsearchives.nseindia.com/corporate/ixbrl/INTEGRATED_FILING_INDAS_140685_05022026213814_iXBRL_WEB.html",
    "revenue_cr": 556.46,
    "ebitda_cr": 187.85,
-   "pat_cr": 100.38,
+   "pat_cr": 0.0,
    "pbt_cr": 134.17,
    "finance_costs_cr": 9.7,
    "exceptional_cr": -8.29,
    "eps": 4.77,
    "ebitda_margin": 33.8,
    "paid_up_capital": 211230000.0,
-   "face_value": 1.0
+   "face_value": 1.0,
+   "derived_from_half_year": false
   },
   {
    "qe": "2025-09-30",
@@ -73,14 +77,15 @@
    "filing": "https://nsearchives.nseindia.com/corporate/ixbrl/INTEGRATED_FILING_INDAS_124958_06112025203634_iXBRL_WEB.html",
    "revenue_cr": 537.47,
    "ebitda_cr": 145.82,
-   "pat_cr": 83.84,
+   "pat_cr": 0.0,
    "pbt_cr": 112.05,
    "finance_costs_cr": 9.35,
    "exceptional_cr": 0.0,
    "eps": 4.01,
    "ebitda_margin": 27.1,
    "paid_up_capital": 209830000.0,
-   "face_value": 1.0
+   "face_value": 1.0,
+   "derived_from_half_year": false
   },
   {
    "qe": "2025-06-30",
@@ -96,10 +101,12 @@
    "eps": 2.9,
    "ebitda_margin": 24.4,
    "paid_up_capital": 208550000.0,
-   "face_value": 1.0
+   "face_value": 1.0,
+   "derived_from_half_year": false
   }
  ],
  "missing": [],
+ "financial": false,
  "latest": {
   "qe": "2026-09-30",
   "consolidated": true,
@@ -111,17 +118,17 @@
   "pat_cr": 98.32,
   "eps": 4.63,
   "revenue_yoy": 22.5,
-  "pat_yoy": 17.3,
+  "pat_yoy": null,
   "ebitda_yoy": 27.8,
   "margin_yoy_pts": 1.2,
   "revenue_qoq": 18.8,
-  "pat_qoq": 34.2,
+  "pat_qoq": null,
   "exceptional_cr": 0.0,
   "yoy_base_qe": "2025-09-30"
  },
  "ttm": {
   "eps": 17.79,
-  "pat_cr": 376.22,
+  "pat_cr": 202.56,
   "ebit_cr": 538.76,
   "quarters": [
    "2026-09-30",
@@ -129,7 +136,7 @@
    "2026-03-31",
    "2025-12-31"
   ],
-  "roe": 14.0,
+  "roe": 7.5,
   "roce": 17.2
  },
  "balance_sheet": {

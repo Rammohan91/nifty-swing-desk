@@ -1,6 +1,6 @@
 {
  "symbol": "SHYAMMETL",
- "fetched_at": "2026-11-11T23:49:05+05:30",
+ "fetched_at": "2026-11-11T23:53:02+05:30",
  "quarters": [
   {
    "qe": "2026-09-30",
@@ -16,7 +16,8 @@
    "eps": 18.39,
    "ebitda_margin": 13.8,
    "paid_up_capital": 100000.0,
-   "face_value": 10.0
+   "face_value": 10.0,
+   "derived_from_half_year": false
   },
   {
    "qe": "2026-06-30",
@@ -25,30 +26,32 @@
    "filing": "https://nsearchives.nseindia.com/corporate/ixbrl/INTEGRATED_FILING_INDAS_176044_20072026165231_iXBRL_WEB.html",
    "revenue_cr": 5455.09,
    "ebitda_cr": 765.29,
-   "pat_cr": 350.73,
+   "pat_cr": 345.07,
    "pbt_cr": 469.21,
    "finance_costs_cr": 78.3,
    "exceptional_cr": 0.0,
    "eps": 12.6,
    "ebitda_margin": 14.0,
    "paid_up_capital": 2783800000.0,
-   "face_value": 10.0
+   "face_value": 10.0,
+   "derived_from_half_year": false
   },
   {
    "qe": "2026-03-31",
    "consolidated": true,
    "filed": "11-May-2026 20:38:13",
    "filing": "https://nsearchives.nseindia.com/corporate/ixbrl/INTEGRATED_FILING_INDAS_156758_11052026203814_iXBRL_WEB.html",
-   "revenue_cr": null,
-   "ebitda_cr": null,
-   "pat_cr": null,
-   "pbt_cr": null,
-   "finance_costs_cr": null,
-   "exceptional_cr": null,
-   "eps": null,
-   "ebitda_margin": null,
+   "revenue_cr": 818.9,
+   "ebitda_cr": 239.77,
+   "pat_cr": 121.85,
+   "pbt_cr": 186.24,
+   "finance_costs_cr": 0.47,
+   "exceptional_cr": -0.04,
+   "eps": 4.1,
+   "ebitda_margin": 29.3,
    "paid_up_capital": 2782900000.0,
-   "face_value": null
+   "face_value": null,
+   "derived_from_half_year": true
   },
   {
    "qe": "2025-12-31",
@@ -57,14 +60,15 @@
    "filing": "https://nsearchives.nseindia.com/corporate/ixbrl/INTEGRATED_FILING_INDAS_137280_24012026171825_iXBRL_WEB.html",
    "revenue_cr": 4421.46,
    "ebitda_cr": 487.11,
-   "pat_cr": 197.51,
+   "pat_cr": 197.24,
    "pbt_cr": 270.04,
    "finance_costs_cr": 50.84,
    "exceptional_cr": 0.04,
    "eps": 7.1,
    "ebitda_margin": 11.0,
    "paid_up_capital": 2782300000.0,
-   "face_value": 10.0
+   "face_value": 10.0,
+   "derived_from_half_year": false
   },
   {
    "qe": "2025-09-30",
@@ -73,14 +77,15 @@
    "filing": "https://nsearchives.nseindia.com/corporate/ixbrl/INTEGRATED_FILING_INDAS_125256_07112025200110_iXBRL_WEB.html",
    "revenue_cr": 4457.02,
    "ebitda_cr": 539.43,
-   "pat_cr": 260.45,
+   "pat_cr": -1.31,
    "pbt_cr": 347.09,
    "finance_costs_cr": 50.3,
    "exceptional_cr": 0.01,
    "eps": 9.36,
    "ebitda_margin": 12.1,
    "paid_up_capital": 2782300000.0,
-   "face_value": 10.0
+   "face_value": 10.0,
+   "derived_from_half_year": false
   },
   {
    "qe": "2025-06-30",
@@ -89,19 +94,19 @@
    "filing": "https://nsearchives.nseindia.com/corporate/ixbrl/INTEGRATED_FILING_INDAS_104753_22072025185341_iXBRL_WEB.html",
    "revenue_cr": 4418.84,
    "ebitda_cr": 579.62,
-   "pat_cr": 290.67,
+   "pat_cr": 292.15,
    "pbt_cr": 388.94,
    "finance_costs_cr": 39.78,
    "exceptional_cr": 0.03,
    "eps": 10.45,
    "ebitda_margin": 13.1,
    "paid_up_capital": 2782300000.0,
-   "face_value": 10.0
+   "face_value": 10.0,
+   "derived_from_half_year": false
   }
  ],
- "missing": [
-  "fewer than 4 quarters with EPS: no TTM, P/E, ROE or ROCE"
- ],
+ "missing": [],
+ "financial": false,
  "latest": {
   "qe": "2026-09-30",
   "consolidated": true,
@@ -113,13 +118,26 @@
   "pat_cr": 510.99,
   "eps": 18.39,
   "revenue_yoy": 33.7,
-  "pat_yoy": 96.2,
+  "pat_yoy": 39106.9,
   "ebitda_yoy": 52.6,
   "margin_yoy_pts": 1.7,
   "revenue_qoq": 9.3,
-  "pat_qoq": 45.7,
+  "pat_qoq": 48.1,
   "exceptional_cr": 0.0,
   "yoy_base_qe": "2025-09-30"
+ },
+ "ttm": {
+  "eps": 42.19,
+  "pat_cr": 1175.15,
+  "ebit_cr": 1802.23,
+  "quarters": [
+   "2026-09-30",
+   "2026-06-30",
+   "2026-03-31",
+   "2025-12-31"
+  ],
+  "roe": 9.5,
+  "roce": 13.2
  },
  "balance_sheet": {
   "as_of": "2026-09-30",
