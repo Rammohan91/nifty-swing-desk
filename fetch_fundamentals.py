@@ -108,10 +108,11 @@ TAGS = {
     "other_income": ["OtherIncome"],
     "total_income": ["Income", "TotalIncome"],
     "expenses": ["Expenses"],
-    "pbt": ["ProfitBeforeTax", "ProfitLossBeforeTax"],
+    "pbt": ["ProfitBeforeTax", "ProfitLossBeforeTax", "ProfitLossFromOrdinaryActivitiesBeforeTax"],
     "tax": ["TaxExpense"],
-    "pat": ["ProfitLossAttributableToOwnersOfParent", "ProfitLossForPeriod", "ProfitLossForThePeriod",
-            "NetProfitLossForThePeriod"],
+    "pat": ["ProfitLossAttributableToOwnersOfParent", "ProfitOrLossAttributableToOwnersOfParent",
+            "ProfitLossAfterTaxesMinorityInterestAndShareOfProfitLossOfAssociates", "ProfitLossForPeriod",
+            "ProfitLossForThePeriod", "NetProfitLossForThePeriod"],
     "depreciation": ["DepreciationDepletionAndAmortisationExpense", "DepreciationAndAmortisationExpense"],
     "finance_costs": ["FinanceCosts", "InterestExpended"],
     "exceptional": ["ExceptionalItemsBeforeTax", "ExceptionalItems"],
@@ -121,6 +122,9 @@ TAGS = {
     "paid_up_capital": ["PaidUpValueOfEquityShareCapital", "EquityShareCapital"],
     "face_value": ["FaceValueOfEquityShareCapital"],
     "equity": ["EquityAttributableToOwnersOfParent", "Equity", "TotalEquity"],
+    "bank_capital": ["Capital"],
+    "bank_reserves": ["ReservesAndSurplus"],
+    "deposits": ["Deposits"],
     "borrowings_nc": ["BorrowingsNoncurrent"],
     "borrowings_c": ["BorrowingsCurrent"],
     "borrowings_bank": ["Borrowings"],
@@ -171,17 +175,26 @@ def parse_xbrl(x: str, qe: dt.date) -> dict:
                     return v
         return None
 
-    q = {k: pick(v, "Q") for k, v in TAGS.items()
-         if k in ("revenue", "other_income", "total_income", "expenses", "pbt", "tax", "pat", "depreciation",
-                  "finance_costs", "exceptional", "eps", "face_value", "paid_up_capital")}
+    FLOW = ("revenue", "other_income", "total_income", "expenses", "pbt", "tax", "pat", "depreciation",
+            "finance_costs", "exceptional", "eps")
+    q = {k: pick(TAGS[k], "Q") for k in FLOW + ("face_value",)}
+    q["paid_up_capital"] = pick(TAGS["paid_up_capital"], "Q")
+    h = {k: pick(TAGS[k], "H") for k in FLOW}
     if q.get("paid_up_capital") is None:
         q["paid_up_capital"] = pick(TAGS["paid_up_capital"], "I")
     bs = {k: pick(TAGS[k], "I") for k in ("equity", "borrowings_nc", "borrowings_c", "borrowings_bank", "cash",
-                                          "receivables", "inventories")}
-    bs["gross_npa_pct"] = pick(TAGS["gross_npa_pct"], "Q") or pick(TAGS["gross_npa_pct"], "I")
+                                          "receivables", "inventories", "bank_capital", "bank_reserves",
+                                          "deposits")}
+    if bs.get("equity") is None and bs.get("bank_capital") is not None and bs.get("bank_reserves") is not None:
+        bs["equity"] = bs["bank_capital"] + bs["bank_reserves"]          # banking taxonomy
+    npa = pick(TAGS["gross_npa_pct"], "Q")
+    if npa is None:
+        npa = pick(TAGS["gross_npa_pct"], "I")
+    bs["gross_npa_pct"] = npa if npa else None     # consolidated bank filings report 0 = not reported
     cf = {"ocf_h1": pick(TAGS["ocf"], "H"), "ocf_y": pick(TAGS["ocf"], "Y"),
           "pat_h1": pick(TAGS["pat"], "H"), "pat_y": pick(TAGS["pat"], "Y")}
-    return dict(q=q, bs=bs if any(v is not None for v in bs.values()) else None, cf=cf)
+    return dict(q=q, h=h, bs=bs if any(v is not None for v in bs.values()) else None, cf=cf,
+                banking="BANKING" in x[:3000] or "InterestEarned" in facts)
 
 
 # ------------------------------------------------------------------ per symbol
@@ -210,7 +223,9 @@ def parsed_filing(f):
     os.makedirs(XC, exist_ok=True)
     p = f"{XC}/{f['seq']}.json"
     if os.path.exists(p):
-        return json.load(open(p))
+        d = json.load(open(p))
+        if "h" in d:                       # older cache entries lack half-year values: re-parse those
+            return d
     x = get_text(f["url"])
     if not x:
         return None
@@ -229,7 +244,7 @@ def pct(a, b):
     return None if a is None or b in (None, 0) else round((a / b - 1) * 100 * (1 if b > 0 else -1), 1)
 
 
-def build_symbol(sym):
+def build_symbol(sym, financial=False):
     fl = filings_list(sym)
     time.sleep(PAUSE)
     quarters = []
@@ -242,9 +257,23 @@ def build_symbol(sym):
     pl = get_json(f"{API}/corporate-pledgedata?index=equities&symbol={sym}") or {}
     time.sleep(PAUSE)
 
-    rec = dict(symbol=sym, fetched_at=dt.datetime.now(IST).isoformat(timespec="seconds"), quarters=[], missing=[])
+    rec = dict(symbol=sym, fetched_at=dt.datetime.now(IST).isoformat(timespec="seconds"), quarters=[], missing=[],
+               financial=financial or any(d.get("banking") for d in quarters))
+    by_qe = {d["qe"]: d for d in quarters}
     for d in quarters:
-        q = d["q"]
+        q = dict(d["q"])
+        d["derived"] = False
+        if q.get("pat") is None and (d.get("h") or {}).get("pat") is not None:
+            # Some March filings report the half-year (Oct–Mar) instead of the quarter: Q4 = H2 − Q3
+            prev_qe = (dt.date.fromisoformat(d["qe"]).replace(day=1) - dt.timedelta(days=1))
+            prev_qe = (prev_qe.replace(day=1) - dt.timedelta(days=1)).replace(day=1)
+            prev_qe = (prev_qe - dt.timedelta(days=1))
+            p3 = by_qe.get(prev_qe.isoformat())
+            if p3:
+                for k, v in d["h"].items():
+                    pv = p3["q"].get(k)
+                    q[k] = v - pv if v is not None and pv is not None else None
+                d["derived"] = True
         ebitda = None
         if None not in (q.get("pbt"), q.get("finance_costs"), q.get("depreciation")):
             ebitda = q["pbt"] + q["finance_costs"] + q["depreciation"] - (q.get("other_income") or 0) \
@@ -254,7 +283,8 @@ def build_symbol(sym):
             revenue_cr=cr(q.get("revenue")), ebitda_cr=cr(ebitda), pat_cr=cr(q.get("pat")), pbt_cr=cr(q.get("pbt")),
             finance_costs_cr=cr(q.get("finance_costs")), exceptional_cr=cr(q.get("exceptional")), eps=q.get("eps"),
             ebitda_margin=round(ebitda / q["revenue"] * 100, 1) if ebitda is not None and q.get("revenue") else None,
-            paid_up_capital=q.get("paid_up_capital"), face_value=q.get("face_value")))
+            paid_up_capital=q.get("paid_up_capital"), face_value=q.get("face_value"),
+            derived_from_half_year=d["derived"]))
     Q = rec["quarters"]
     if not Q:
         rec["missing"].append("no integrated-filing results found")
@@ -323,6 +353,18 @@ def build_symbol(sym):
                              shares_outstanding=num(pdata.get("totIssuedShares")))
     else:
         rec["missing"].append("pledge disclosure")
+    if rec["financial"]:
+        for x in rec["quarters"]:
+            x["ebitda_cr"] = x["ebitda_margin"] = None
+        if rec.get("latest"):
+            for k in ("ebitda_cr", "ebitda_margin", "ebitda_yoy", "margin_yoy_pts"):
+                rec["latest"][k] = None
+        if rec.get("ttm"):
+            rec["ttm"].pop("roce", None)
+        if rec.get("balance_sheet"):
+            for k in ("ocf_to_pat_h1", "ocf_to_pat_fy", "de", "receivables_cr", "inventories_cr"):
+                rec["balance_sheet"].pop(k, None)
+        rec["note"] = "Lender: EBITDA, ROCE, debt/equity and cash-flow ratios are not meaningful and are omitted."
     rec["source"] = dict(name="NSE Integrated Filing (XBRL), shareholding and pledge disclosures",
                          url=f"https://www.nseindia.com/get-quotes/equity?symbol={sym}")
     return rec
@@ -361,7 +403,9 @@ def recent_filers(days=4):
 def main():
     os.makedirs(OUT, exist_ok=True)
     import csv
-    uni = [r["Symbol"] for r in csv.DictReader(open(f"{DATA}/nifty500.csv"))]
+    rows = list(csv.DictReader(open(f"{DATA}/nifty500.csv")))
+    uni = [r["Symbol"] for r in rows]
+    fin = {r["Symbol"] for r in rows if r.get("Industry") == "Financial Services"}
     idx_p = f"{OUT}/_index.json"
     index = json.load(open(idx_p)) if os.path.exists(idx_p) else {}
     now = dt.datetime.now(IST)
@@ -383,7 +427,7 @@ def main():
         if time.time() - started > 45 * 60:
             break
         try:
-            rec = build_symbol(s)
+            rec = build_symbol(s, financial=s in fin)
             json.dump(rec, open(f"{OUT}/{s}.json", "w"), separators=(",", ":"))
             index[s] = dict(fetched_at=rec["fetched_at"], latest_qe=(rec.get("latest") or {}).get("qe"),
                             missing=rec["missing"])
@@ -401,8 +445,10 @@ def main():
 if __name__ == "__main__":
     if len(sys.argv) > 1:                # debug: python fetch_fundamentals.py SAILIFE HDFCBANK
         os.makedirs(OUT, exist_ok=True)
+        import csv
+        fin = {r["Symbol"] for r in csv.DictReader(open(f"{DATA}/nifty500.csv")) if r.get("Industry") == "Financial Services"}
         for s in sys.argv[1:]:
-            rec = build_symbol(s)
+            rec = build_symbol(s, financial=s in fin)
             json.dump(rec, open(f"{OUT}/{s}.json", "w"), indent=1)
             print(json.dumps({k: rec.get(k) for k in ("latest", "ttm", "balance_sheet", "shareholding", "pledge",
                                                       "missing")}, indent=1)[:2500])
