@@ -1,13 +1,10 @@
 {
- "run_at": "2026-11-17T04:20:35+05:30",
+ "run_at": "2026-11-17T04:44:27+05:30",
  "today": "2026-11-17",
  "today_status": "pending",
  "constituents": true,
  "fiidii": false,
  "fetched": {
-  "2026-11-14": "no_session",
-  "2026-11-15": "no_session",
-  "2026-11-16": "traded",
   "2026-11-17": "pending"
  }
 }
