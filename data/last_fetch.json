@@ -1,10 +1,12 @@
 {
- "run_at": "2026-11-20T19:52:54+05:30",
- "today": "2026-11-20",
+ "run_at": "2026-11-23T22:02:07+05:30",
+ "today": "2026-11-23",
  "today_status": "traded",
  "constituents": true,
  "fiidii": true,
  "fetched": {
-  "2026-11-20": "traded"
+  "2026-11-21": "no_session",
+  "2026-11-22": "no_session",
+  "2026-11-23": "traded"
  }
 }
