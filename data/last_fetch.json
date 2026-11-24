@@ -1,10 +1,10 @@
 {
- "run_at": "2026-11-24T19:46:13+05:30",
- "today": "2026-11-24",
- "today_status": "no_session",
+ "run_at": "2026-11-25T04:28:56+05:30",
+ "today": "2026-11-25",
+ "today_status": "pending",
  "constituents": true,
  "fiidii": false,
  "fetched": {
-  "2026-11-24": "no_session"
+  "2026-11-25": "pending"
  }
 }
