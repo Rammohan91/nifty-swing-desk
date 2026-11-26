@@ -1,21 +1,23 @@
 {
- "run_at": "2026-11-25T19:46:42+05:30",
+ "run_at": "2026-11-26T19:46:37+05:30",
  "mode": "shortlist",
- "shortlist": 31,
+ "shortlist": 33,
  "refreshed": [
-  "INDIGO",
-  "TRENT",
-  "PPLPHARMA",
-  "KARURVYSYA",
-  "ITCHOTELS",
-  "ADANIPORTS",
-  "DRREDDY",
-  "HINDUNILVR",
-  "HDFCLIFE",
-  "ITC",
-  "AUROPHARMA"
+  "MCX",
+  "BAJAJHLDNG",
+  "TCS",
+  "BSE",
+  "WOCKPHARMA",
+  "ANANDRATHI",
+  "SONACOMS",
+  "HDFCBANK",
+  "KFINTECH",
+  "SANSERA",
+  "SIGNATURE",
+  "ANGELONE",
+  "UNOMINDA"
  ],
  "up_to_date": 20,
  "failed": [],
- "calendar_symbols": 23
+ "calendar_symbols": 26
 }
